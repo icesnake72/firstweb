@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>개발자 포트폴리오</title>
+  <meta name="description" content="20년 경력 소프트웨어 개발자 포트폴리오">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fafaf9;
+      --surface: #ffffff;
+      --text: #1c1917;
+      --muted: #78716c;
+      --line: #e7e5e4;
+      --accent: #2563eb;
+      --chip: #f5f5f4;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0c0a09;
+        --surface: #1c1917;
+        --text: #f5f5f4;
+        --muted: #a8a29e;
+        --line: #292524;
+        --accent: #60a5fa;
+        --chip: #1c1917;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* 상단 내비게이션 */
+    nav {
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      z-index: 10;
+    }
+    nav .wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 56px;
+    }
+    nav .logo {
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 500;
+      font-size: 15px;
+    }
+    nav ul { list-style: none; display: flex; gap: 20px; }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color .2s;
+    }
+    nav a:hover { color: var(--text); }
+
+    /* 히어로 */
+    header.hero { padding: 96px 0 72px; }
+    .hero .eyebrow {
+      font-family: "JetBrains Mono", monospace;
+      color: var(--accent);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 48px);
+      line-height: 1.25;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 560px;
+    }
+    .stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      font-weight: 700;
+    }
+    .stat span { color: var(--muted); font-size: 13px; }
+
+    /* 섹션 공통 */
+    section {
+      padding: 56px 0;
+      border-top: 1px solid var(--line);
+    }
+    section h2 {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* 경력 */
+    .item {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 24px;
+      padding: 18px 0;
+    }
+    .item + .item { border-top: 1px dashed var(--line); }
+    .item .when {
+      color: var(--muted);
+      font-size: 14px;
+      font-family: "JetBrains Mono", monospace;
+    }
+    .item h3 { font-size: 18px; font-weight: 700; }
+    .item p { color: var(--muted); font-size: 15px; margin-top: 4px; }
+
+    /* 기술 */
+    .skill-group + .skill-group { margin-top: 24px; }
+    .skill-group h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      padding: 6px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--chip);
+    }
+
+    /* 연락처 */
+    .contact p { color: var(--muted); margin-bottom: 20px; }
+    .btn {
+      display: inline-block;
+      padding: 12px 22px;
+      border-radius: 8px;
+      background: var(--text);
+      color: var(--bg);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: opacity .2s;
+    }
+    .btn:hover { opacity: .85; }
+
+    footer {
+      padding: 40px 0 56px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 600px) {
+      nav ul { gap: 14px; }
+      header.hero { padding: 64px 0 48px; }
+      .item { grid-template-columns: 1fr; gap: 4px; }
+      .stats { gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="wrap">
+      <span class="logo">~/dev</span>
+      <ul>
+        <li><a href="#experience">경력</a></li>
+        <li><a href="#skills">기술</a></li>
+        <li><a href="#education">학력</a></li>
+        <li><a href="#contact">연락</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="wrap">
+
+    <header class="hero">
+      <p class="eyebrow">Hello, world.</p>
+      <h1>20년 동안 코드로<br>문제를 풀어온 개발자입니다.</h1>
+      <p>
+        C/C++부터 Java, Python까지, 프론트엔드와 백엔드를 아우르며
+        소프트웨어를 만들어 왔습니다. 인공지능 석사(컴퓨터 비전)를 바탕으로
+        AI 기술을 실제 서비스에 접목하는 일에 관심이 많습니다.
+      </p>
+      <div class="stats">
+        <div class="stat"><strong>20년</strong><span>개발 경력</span></div>
+        <div class="stat"><strong>M.S.</strong><span>인공지능 · 컴퓨터 비전</span></div>
+        <div class="stat"><strong>Full-stack</strong><span>Front-end · Back-end</span></div>
+      </div>
+    </header>
+
+    <section id="experience">
+      <h2>Experience</h2>
+      <!-- 기간과 담당 업무를 실제 내용으로 바꿔주세요 -->
+      <div class="item">
+        <div class="when">재직 기간</div>
+        <div>
+          <h3>파수닷컴</h3>
+          <p>소프트웨어 개발 · 담당 업무와 주요 성과를 적어주세요.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="when">재직 기간</div>
+        <div>
+          <h3>벅스뮤직</h3>
+          <p>소프트웨어 개발 · 담당 업무와 주요 성과를 적어주세요.</p>
+        </div>
+      </div>
+      <div class="item">
+        <div class="when">그 외</div>
+        <div>
+          <h3>다수 기업</h3>
+          <p>여러 회사에서 다양한 서비스와 시스템 개발에 참여했습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <h2>Skills</h2>
+      <div class="skill-group">
+        <h3>Languages</h3>
+        <div class="chips">
+          <span class="chip">C</span>
+          <span class="chip">C++</span>
+          <span class="chip">Java</span>
+          <span class="chip">Python</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Development</h3>
+        <div class="chips">
+          <span class="chip">Front-end</span>
+          <span class="chip">Back-end</span>
+          <span class="chip">Computer Vision</span>
+          <span class="chip">AI</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>Tools &amp; Infra</h3>
+        <div class="chips">
+          <span class="chip">Docker</span>
+          <span class="chip">Kubernetes</span>
+          <span class="chip">Git</span>
+          <span class="chip">GitHub</span>
+          <span class="chip">AWS</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="education">
+      <h2>Education</h2>
+      <div class="item">
+        <div class="when">석사</div>
+        <div>
+          <h3>호서대학교 인공지능학과</h3>
+          <p>컴퓨터 비전 전공</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <h2>Contact</h2>
+      <p>함께 일하거나 이야기 나누고 싶으시면 편하게 연락 주세요.</p>
+      <!-- 아래 주소를 본인 이메일로 바꿔주세요 -->
+      <a class="btn" href="mailto:your@email.com">이메일 보내기</a>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="wrap">© 2026 · Made with HTML &amp; CSS</div>
+  </footer>
+
+</body>
+</html>
