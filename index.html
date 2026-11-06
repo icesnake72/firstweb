@@ -2,57 +2,158 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F8F8F8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
   <title>개발자 포트폴리오</title>
   <meta name="description" content="20년 경력 소프트웨어 개발자 포트폴리오">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Noto+Sans+KR:wght@300..800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">  <style>
+    /* ===== 디자인 토큰 (Awwwards 스타일) ===== */
     :root {
-      --bg: #fafaf9;
-      --surface: #ffffff;
-      --text: #1c1917;
-      --muted: #78716c;
-      --line: #e7e5e4;
-      --accent: #2563eb;
-      --chip: #f5f5f4;
+      --font-1: Inter; /* 이전: Inter Tight */
+      --font-light: 300;
+      --font-normal: 400;
+      --font-medium: 500;
+      --font-bold: 600;
+      --font-extrabold: 700;
+      --font-black: 800;
+      --color-primary: #222;
+      --color-primary-rgb: 34, 34, 34;
+      --color-link: #222;
+      --color-white: #fff;
+      --color-white-rgb: 255, 255, 255;
+      --color-orange: #FA5D29;
+      --color-errors: #FA5D29;
+      --color-blue: #49B3FC;
+      --color-featured: #f8f0ee;
+      --color-red: #FA5D29;
+      --color-underlined: var(--color-primary-rgb);
+      --color-connect: #FF602C;
+      --color-connect-2: #FFAE94;
+      --color-connect-3: #FFC5B1;
+      --color-inspire: #AAEEC4;
+      --color-inspire-2: #C8E4D3;
+      --color-inspire-3: #E2F4E9;
+      --color-awards: #502bd8;
+      --color-awards-2: #6749d1;
+      --color-awards-3: #917eda;
+      --color-read: #c0ab3c;
+      --color-read-2: #CDC38B;
+      --color-read-3: #DBD6C0;
+      --color-learn: #FFF083;
+      --color-learn-2: #FFF9D0;
+      --color-learn-3: #fffbe2;
+      --color-jobs: #74bcff;
+      --color-jobs-2: #99ccfc;
+      --color-jobs-3: #b4d7f8;
+      --text-size-small: 11px;
+      --text-size-primary: 14px;
+      --text-size-medium: 18px;
+      --text-size-large: 22px;
+      --border-gray: #ededed;
+      --color-dotteds-rgb: 34, 34, 34;
+      --bg-primary: #F8F8F8;
+      --bg-primary-rgb: 248, 248, 248;
+      --bg-secondary: #222;
+      --bg-3rd: #ededed;
+      --bg-4rd: #f8f8f8;
+      --bg-white: white;
+      --innerWidth: 1816px;
+      --header-height: 71px;
+      --gutter: 20px;
+      --pad-inner: 52px;
+      --color-odd-rows: #f8f8f8;
+      --avatar-bg: #F8F8F8;
+      --border-table: #222;
+      --border-thin: 0.5px;
+      --alert-green: #e0f4d9;
+      --alert-green-rgb: 224, 244, 217;
+      --alert-yellow: #FFF083;
+      --alert-yellow-rgb: 255, 240, 131;
+      --modal-alpha: 0.7;
+      --rounded-small: 4px;
+      --rounded-normal: 8px;
+      --rounded-large: 1rem;
+      --img-resizing-site: 16 / 12;
+      --img-resizing-paronamic: 2 / 1;
+      --img-resizing-desktop: 19 / 10
     }
+
+    /* 다크 모드: Awwwards의 body.dark 값을 시스템 설정에 연결 */
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #0c0a09;
-        --surface: #1c1917;
-        --text: #f5f5f4;
-        --muted: #a8a29e;
-        --line: #292524;
-        --accent: #60a5fa;
-        --chip: #1c1917;
+        --color-primary: #eee;
+        --color-primary-rgb: 238, 238, 238;
+        --color-link: #eee;
+        --bg-primary: #121212;
+        --bg-primary-rgb: 18, 18, 18;
+        --bg-3rd: #262626;
+        --bg-white: #1c1c1c;
+        --border-gray: #2a2a2a;
+        --color-awards: #917eda;
       }
+    }
+
+    /* 페이지에서 쓰는 이름 → 토큰 연결 */
+    :root {
+      --bg: var(--bg-primary);
+      --surface: var(--bg-white);
+      --text: var(--color-primary);
+      --muted: rgba(var(--color-primary-rgb), .62);
+      --line: var(--border-gray);
+      --accent: var(--color-awards);
+      --chip: var(--bg-3rd);
+      --font-body: var(--font-1), "Noto Sans KR", system-ui, -apple-system, sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { scroll-behavior: smooth; }
+    html {
+      scroll-behavior: smooth;
+      /* iOS 가로 모드에서 글자가 임의로 커지는 것 방지 */
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      * { transition: none !important; }
+    }
 
     body {
-      font-family: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+      font-family: var(--font-body);
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-light);
       background: var(--bg);
       color: var(--text);
-      line-height: 1.7;
+      line-height: 200%;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      -webkit-tap-highlight-color: transparent;
+      /* 한글이 단어 중간에서 끊기지 않도록 */
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
+
+    strong { font-weight: var(--font-bold); }
 
     .wrap {
       max-width: 760px;
       margin: 0 auto;
-      padding: 0 24px;
+      /* 노치가 있는 기기의 가로 모드에서도 내용이 가려지지 않도록 */
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
     }
 
     /* 상단 내비게이션 */
     nav {
       position: sticky;
       top: 0;
+      background: var(--bg); /* color-mix 미지원 브라우저용 */
       background: color-mix(in srgb, var(--bg) 85%, transparent);
+      -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--line);
       z-index: 10;
@@ -61,54 +162,149 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       height: 56px;
     }
     nav .logo {
       font-family: "JetBrains Mono", monospace;
-      font-weight: 500;
+      font-weight: var(--font-medium);
       font-size: 15px;
+      white-space: nowrap;
     }
-    nav ul { list-style: none; display: flex; gap: 20px; }
+    nav ul { list-style: none; display: flex; gap: 4px; margin-right: -10px; }
     nav a {
-      color: var(--muted);
+      display: flex;
+      align-items: center;
+      min-height: 44px; /* 손가락으로 누르기 쉬운 크기 */
+      padding: 0 10px;
+      color: var(--text);
       text-decoration: none;
-      font-size: 14px;
-      transition: color .2s;
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-medium);
+      white-space: nowrap;
+      transition: opacity .3s;
     }
-    nav a:hover { color: var(--text); }
+    nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; border-radius: var(--rounded-normal); }
+    @media (hover: hover) {
+      nav a:hover { opacity: .7; }
+    }
+
+    /* 앵커로 이동할 때 고정된 내비게이션에 제목이 가려지지 않도록 */
+    section[id] { scroll-margin-top: 56px; }
 
     /* 히어로 */
-    header.hero { padding: 96px 0 72px; }
+    header.hero { padding: 48px 0 72px; }
+
+    /* 왔다 갔다 하는 강아지: GIF는 제자리걸음, 좌우 이동은 CSS */
+    .puppy-track {
+      position: relative;
+      height: 60px;
+      margin-bottom: 32px;
+      border-bottom: 1px dashed var(--line); /* 강아지가 걷는 땅 */
+    }
+    .puppy {
+      position: absolute;
+      bottom: -3px; /* 발이 선에 닿도록 */
+      left: 0;
+      width: 84px;
+      height: 60px;
+      image-rendering: pixelated; /* 픽셀아트가 흐려지지 않게 */
+      animation: puppy-walk 14s linear infinite;
+    }
+    @keyframes puppy-walk {
+      0%     { left: 0;                  transform: scaleX(1); }
+      49.99% { left: calc(100% - 84px);  transform: scaleX(1); }
+      50%    { left: calc(100% - 84px);  transform: scaleX(-1); } /* 끝에서 뒤돌기 */
+      99.99% { left: 0;                  transform: scaleX(-1); }
+      100%   { left: 0;                  transform: scaleX(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .puppy { animation: none; }
+    }
     .hero .eyebrow {
-      font-family: "JetBrains Mono", monospace;
       color: var(--accent);
-      font-size: 14px;
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-medium);
       margin-bottom: 16px;
     }
     .hero h1 {
       font-size: clamp(32px, 6vw, 48px);
       line-height: 1.25;
-      font-weight: 700;
+      font-weight: var(--font-bold);
       letter-spacing: -0.02em;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .hero-image {
+      max-width: 560px;
+      margin: 0 0 28px;
+      border-radius: var(--rounded-large);
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .hero-image img {
+      display: block;
+      width: 100%;
+      height: auto; /* width/height 속성으로 비율을 미리 잡아 로딩 중 레이아웃 흔들림 방지 */
     }
     .hero p {
       color: var(--muted);
-      font-size: 17px;
+      font-size: var(--text-size-medium);
+      line-height: 180%;
       max-width: 560px;
     }
+    /* 숫자 카드: 3개가 항상 같은 폭·높이 */
     .stats {
-      display: flex;
-      gap: 40px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
       margin-top: 40px;
-      flex-wrap: wrap;
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--rounded-large);
     }
     .stat strong {
       display: block;
-      font-size: 28px;
-      font-weight: 700;
+      font-size: 16px;
+      font-weight: var(--font-bold);
+      line-height: 1.4;
     }
-    .stat span { color: var(--muted); font-size: 13px; }
+    .stat > span:not(.stat-icon) {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* 숫자 영역 아이콘 (Skills 뱃지와 같은 컬러 패밀리) */
+    .stat-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 16px;
+      border-radius: var(--rounded-normal);
+      background: var(--icon-bg);
+      color: var(--icon-fg, #222);
+    }
+    /* Heroicons outline 기본값: 24px 그리드, 선 두께 1.5 */
+    .stat-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .stat--exp   { --icon-bg: var(--color-connect-3); }
+    .stat--edu   { --icon-bg: var(--color-awards-2); --icon-fg: #fff; }
+    .stat--stack { --icon-bg: var(--color-jobs-3); }
 
     /* 섹션 공통 */
     section {
@@ -116,9 +312,8 @@
       border-top: 1px solid var(--line);
     }
     section h2 {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 13px;
-      font-weight: 500;
+      font-size: var(--text-size-small);
+      font-weight: var(--font-medium);
       text-transform: uppercase;
       letter-spacing: .12em;
       color: var(--muted);
@@ -135,56 +330,146 @@
     .item + .item { border-top: 1px dashed var(--line); }
     .item .when {
       color: var(--muted);
-      font-size: 14px;
-      font-family: "JetBrains Mono", monospace;
+      font-size: var(--text-size-primary);
     }
-    .item h3 { font-size: 18px; font-weight: 700; }
-    .item p { color: var(--muted); font-size: 15px; margin-top: 4px; }
+    .item h3 {
+      font-size: var(--text-size-medium);
+      font-weight: var(--font-bold);
+      line-height: 1.6;
+    }
+    .item p { color: var(--muted); font-size: var(--text-size-primary); margin-top: 2px; }
 
     /* 기술 */
     .skill-group + .skill-group { margin-top: 24px; }
     .skill-group h3 {
-      font-size: 15px;
-      font-weight: 500;
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-medium);
       margin-bottom: 10px;
     }
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
     .chip {
-      font-family: "JetBrains Mono", monospace;
-      font-size: 13px;
-      padding: 6px 12px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--chip);
+      display: inline-flex;
+      align-items: center;
+      height: 36px;
+      padding: 0 16px;
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-normal);
+      border-radius: var(--rounded-normal);
+      /* 그룹별 색은 아래 --chip-bg / --chip-bg-hover 로 지정 */
+      background: var(--chip-bg, var(--chip));
+      color: #222; /* 파스텔 배경 위라 다크 모드에서도 진한 글자 유지 */
+      transition: background .3s;
+    }
+    @media (hover: hover) {
+      .chip:hover { background: var(--chip-bg-hover, var(--chip-bg, var(--chip))); }
+    }
+
+    /* 그룹별 색상 (디자인 토큰의 컬러 패밀리 사용) */
+    .skill-group h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .skill-group h3::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--group-dot);
+    }
+    .skill-group--lang {
+      --chip-bg: var(--color-connect-3);
+      --chip-bg-hover: var(--color-connect-2);
+      --group-dot: var(--color-connect);
+    }
+    .skill-group--dev {
+      --chip-bg: var(--color-inspire);
+      --chip-bg-hover: var(--color-inspire-2);
+      --group-dot: #52c67e;
+    }
+    .skill-group--tools {
+      --chip-bg: var(--color-jobs-3);
+      --chip-bg-hover: var(--color-jobs-2);
+      --group-dot: var(--color-jobs);
+    }
+    /* 강조 칩: AI는 Awwwards 보라로 */
+    .chip--accent {
+      --chip-bg: var(--color-awards-2);
+      --chip-bg-hover: #502bd8;
+      color: #fff;
     }
 
     /* 연락처 */
     .contact p { color: var(--muted); margin-bottom: 20px; }
     .btn {
-      display: inline-block;
-      padding: 12px 22px;
-      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 24px;
+      border-radius: var(--rounded-normal);
       background: var(--text);
       color: var(--bg);
       text-decoration: none;
-      font-size: 15px;
-      font-weight: 500;
-      transition: opacity .2s;
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-medium);
+      transition: opacity .3s;
     }
-    .btn:hover { opacity: .85; }
+    .btn:active { opacity: .8; }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    @media (hover: hover) {
+      .btn:hover { opacity: .8; }
+    }
 
     footer {
-      padding: 40px 0 56px;
+      padding: 40px 0 calc(56px + env(safe-area-inset-bottom));
       color: var(--muted);
-      font-size: 13px;
+      font-size: var(--text-size-small);
       border-top: 1px solid var(--line);
     }
 
     @media (max-width: 600px) {
-      nav ul { gap: 14px; }
-      header.hero { padding: 64px 0 48px; }
-      .item { grid-template-columns: 1fr; gap: 4px; }
-      .stats { gap: 28px; }
+      .wrap {
+        padding-left: max(20px, env(safe-area-inset-left));
+        padding-right: max(20px, env(safe-area-inset-right));
+      }
+      nav ul { gap: 0; margin-right: -8px; }
+      nav a { padding: 0 8px; }
+      header.hero { padding: 32px 0 44px; }
+      .puppy-track { margin-bottom: 24px; }
+      .puppy { animation-duration: 8s; } /* 좁은 화면은 거리가 짧으니 속도 맞춤 */
+      .hero p { font-size: 16px; }
+      .hero-image { margin-bottom: 24px; border-radius: var(--rounded-normal); }
+      .stats { gap: 8px; margin-top: 32px; }
+      .stat { padding: 14px 12px; border-radius: var(--rounded-normal); }
+      .stat-icon { width: 44px; height: 44px; margin-bottom: 12px; }
+      .stat-icon svg { width: 22px; height: 22px; }
+      .stat strong { font-size: 15px; }
+      .stat > span:not(.stat-icon) { font-size: var(--text-size-small); }
+      section { padding: 44px 0; }
+      section h2 { margin-bottom: 20px; }
+      .item { grid-template-columns: 1fr; gap: 4px; padding: 14px 0; }
+      .btn { display: flex; width: 100%; }
+    }
+
+    /* 아주 좁은 화면 (갤럭시 폴드 접힌 화면 등) */
+    @media (max-width: 360px) {
+      .wrap {
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+      }
+      nav .logo { font-size: 14px; }
+      nav a { padding: 0 6px; font-size: 13px; }
+      nav ul { margin-right: -6px; }
+      /* 3열이 너무 좁아지면 1열 가로형 카드로 (크기는 계속 동일) */
+      .stats { grid-template-columns: 1fr; }
+      .stat {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        column-gap: 12px;
+        align-items: center;
+      }
+      .stat-icon { grid-row: span 2; margin-bottom: 0; }
     }
   </style>
 </head>
@@ -205,17 +490,43 @@
   <main class="wrap">
 
     <header class="hero">
+      <div class="puppy-track" aria-hidden="true">
+        <img class="puppy" src="images/puppy.gif" width="84" height="60" alt="">
+      </div>
       <p class="eyebrow">Hello, world.</p>
       <h1>20년 동안 코드로<br>문제를 풀어온 개발자입니다.</h1>
+      <figure class="hero-image">
+        <img src="images/images.jpg" width="548" height="364"
+             alt="노트북을 든 채 웃고 있는 개발자 일러스트와 '비개발자, 바이브 코딩으로 시민개발자가 되다' 문구"
+             decoding="async">
+      </figure>
       <p>
         C/C++부터 Java, Python까지, 프론트엔드와 백엔드를 아우르며
         소프트웨어를 만들어 왔습니다. 인공지능 석사(컴퓨터 비전)를 바탕으로
         AI 기술을 실제 서비스에 접목하는 일에 관심이 많습니다.
       </p>
       <div class="stats">
-        <div class="stat"><strong>20년</strong><span>개발 경력</span></div>
-        <div class="stat"><strong>M.S.</strong><span>인공지능 · 컴퓨터 비전</span></div>
-        <div class="stat"><strong>Full-stack</strong><span>Front-end · Back-end</span></div>
+        <div class="stat stat--exp">
+          <span class="stat-icon" aria-hidden="true">
+            <!-- Heroicons: clock (outline) -->
+            <svg viewBox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          </span>
+          <strong>20년</strong><span>개발 경력</span>
+        </div>
+        <div class="stat stat--edu">
+          <span class="stat-icon" aria-hidden="true">
+            <!-- Heroicons: academic-cap (outline) -->
+            <svg viewBox="0 0 24 24"><path d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>
+          </span>
+          <strong>M.S.</strong><span>인공지능 · 컴퓨터 비전</span>
+        </div>
+        <div class="stat stat--stack">
+          <span class="stat-icon" aria-hidden="true">
+            <!-- Heroicons: square-3-stack-3d (outline) -->
+            <svg viewBox="0 0 24 24"><path d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3"/></svg>
+          </span>
+          <strong>Full-stack</strong><span>Front-end · Back-end</span>
+        </div>
       </div>
     </header>
 
@@ -247,7 +558,7 @@
 
     <section id="skills">
       <h2>Skills</h2>
-      <div class="skill-group">
+      <div class="skill-group skill-group--lang">
         <h3>Languages</h3>
         <div class="chips">
           <span class="chip">C</span>
@@ -256,16 +567,16 @@
           <span class="chip">Python</span>
         </div>
       </div>
-      <div class="skill-group">
+      <div class="skill-group skill-group--dev">
         <h3>Development</h3>
         <div class="chips">
           <span class="chip">Front-end</span>
           <span class="chip">Back-end</span>
           <span class="chip">Computer Vision</span>
-          <span class="chip">AI</span>
+          <span class="chip chip--accent">AI</span>
         </div>
       </div>
-      <div class="skill-group">
+      <div class="skill-group skill-group--tools">
         <h3>Tools &amp; Infra</h3>
         <div class="chips">
           <span class="chip">Docker</span>
