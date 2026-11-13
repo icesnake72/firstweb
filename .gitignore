@@ -1,0 +1,69 @@
+# ==============================================
+# GitHub에 올리지 않을 파일 목록
+# 주의: images/ 폴더의 이미지는 사이트에 필요하므로 무시하지 않습니다.
+# ==============================================
+
+# ----- 비밀 정보 (API 키, 토큰, 비밀번호) -----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.json
+
+# ----- 운영체제가 만드는 파일 -----
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+# macOS
+.DS_Store
+._*
+
+# ----- 에디터 / IDE 설정 -----
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ----- Node.js (나중에 npm 도구를 쓸 경우) -----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm/
+
+# ----- 빌드 결과물 / 캐시 -----
+dist/
+build/
+.cache/
+.parcel-cache/
+.vite/
+
+# ----- 배포 도구 로컬 설정 -----
+.netlify/
+.vercel/
+
+# ----- Python (이미지 생성 스크립트 등) -----
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# ----- 로그 / 임시 파일 -----
+*.log
+*.tmp
+*.bak
+tmp/
+temp/
+
+# ----- 원본 디자인 소스 (용량이 큰 작업 파일) -----
+*.psd
+*.ai
+*.sketch

@@ -1,0 +1,33 @@
+# ==============================================
+# Netlify 배포 설정
+# public/ 폴더의 내용만 웹사이트로 배포됩니다.
+# 루트의 .env, .env.example, .gitignore, netlify.toml 등은 공개되지 않습니다.
+# ==============================================
+
+[build]
+  # 배포할 폴더 (사이트 루트 = public/)
+  publish = "public"
+  # 빌드 과정이 없는 정적 사이트이므로 빌드 명령 없음
+  command = ""
+  # 서버리스 함수 위치 (카카오 로그인 토큰 교환 등에 사용 예정)
+  functions = "netlify/functions"
+
+[dev]
+  # 로컬 개발 서버 (netlify dev) — .env 의 Redirect URI 포트와 맞춤
+  port = 8888
+  publish = "public"
+
+# 카카오 로그인 콜백 함수를 만든 뒤 아래 주석을 해제하세요.
+# /auth/kakao/callback 요청을 netlify/functions/kakao-callback 함수로 연결합니다.
+# [[redirects]]
+#   from = "/auth/kakao/callback"
+#   to = "/.netlify/functions/kakao-callback"
+#   status = 200
+
+# 기본 보안 헤더
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
