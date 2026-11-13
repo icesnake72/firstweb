@@ -1,0 +1,12 @@
+{
+  "name": "firstweb",
+  "private": true,
+  "type": "module",
+  "description": "Personal developer portfolio with Kakao login (Netlify Functions)",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

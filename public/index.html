@@ -171,7 +171,76 @@
       font-size: 15px;
       white-space: nowrap;
     }
-    nav ul { list-style: none; display: flex; gap: 4px; margin-right: -10px; }
+    .nav-right { display: flex; align-items: center; gap: 8px; }
+    nav ul { list-style: none; display: flex; gap: 4px; }
+
+    /* ===== 카카오 로그인 ===== */
+    .auth { display: flex; align-items: center; }
+    .kakao-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: var(--rounded-normal);
+      background: #FEE500;            /* 카카오 공식 버튼 색 */
+      color: rgba(0, 0, 0, .85);
+      font-size: 13px;
+      font-weight: var(--font-medium);
+      text-decoration: none;
+      white-space: nowrap;
+      min-height: 36px; /* nav a 의 44px 최소 높이 덮어쓰기 */
+      transition: filter .2s;
+    }
+    .kakao-btn svg { width: 18px; height: 18px; fill: #000; flex: none; }
+    .kakao-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    @media (hover: hover) { .kakao-btn:hover { filter: brightness(.96); } }
+
+    .auth-user { display: flex; align-items: center; gap: 8px; }
+    .auth-user[hidden], .kakao-btn[hidden] { display: none; }
+    .avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--chip);
+      flex: none;
+    }
+    .nickname {
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: var(--font-medium);
+    }
+    .logout-btn {
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--rounded-normal);
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .logout-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      max-width: calc(100% - 32px);
+      padding: 10px 16px;
+      border-radius: var(--rounded-normal);
+      background: var(--text);
+      color: var(--bg);
+      font-size: 13px;
+      z-index: 20;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, .15);
+    }
+    .toast[hidden] { display: none; }
     nav a {
       display: flex;
       align-items: center;
@@ -433,8 +502,12 @@
         padding-left: max(20px, env(safe-area-inset-left));
         padding-right: max(20px, env(safe-area-inset-right));
       }
-      nav ul { gap: 0; margin-right: -8px; }
-      nav a { padding: 0 8px; }
+      nav ul { gap: 0; }
+      nav ul a { padding: 0 8px; }
+      .nav-right { gap: 4px; }
+      /* 좁은 화면: 카카오 버튼은 아이콘만, 로그인 후엔 닉네임 숨김 */
+      .kakao-label, .nickname { display: none; }
+      .kakao-btn { width: 36px; padding: 0; justify-content: center; }
       header.hero { padding: 32px 0 44px; }
       .puppy-track { margin-bottom: 24px; }
       .puppy { animation-duration: 8s; } /* 좁은 화면은 거리가 짧으니 속도 맞춤 */
@@ -459,8 +532,8 @@
         padding-right: max(16px, env(safe-area-inset-right));
       }
       nav .logo { font-size: 14px; }
-      nav a { padding: 0 6px; font-size: 13px; }
-      nav ul { margin-right: -6px; }
+      nav ul a { padding: 0 6px; font-size: 13px; }
+      .auth-user .avatar { display: none; }
       /* 3열이 너무 좁아지면 1열 가로형 카드로 (크기는 계속 동일) */
       .stats { grid-template-columns: 1fr; }
       .stat {
@@ -478,14 +551,31 @@
   <nav>
     <div class="wrap">
       <span class="logo">~/dev</span>
-      <ul>
-        <li><a href="#experience">경력</a></li>
-        <li><a href="#skills">기술</a></li>
-        <li><a href="#education">학력</a></li>
-        <li><a href="#contact">연락</a></li>
-      </ul>
+      <div class="nav-right">
+        <ul>
+          <li><a href="#experience">경력</a></li>
+          <li><a href="#skills">기술</a></li>
+          <li><a href="#education">학력</a></li>
+          <li><a href="#contact">연락</a></li>
+        </ul>
+
+        <!-- 카카오 로그인: 로그인 상태는 /api/me 로 확인해 아래 둘 중 하나를 보여줌 -->
+        <div class="auth" id="auth">
+          <a class="kakao-btn" id="auth-login" href="/auth/kakao/login" aria-label="카카오 로그인">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.48 3 2 6.58 2 11c0 2.83 1.86 5.32 4.66 6.74l-.95 3.48c-.08.3.26.54.52.37l4.13-2.74c.54.06 1.08.09 1.64.09 5.52 0 10-3.58 10-8S17.52 3 12 3z"/></svg>
+            <span class="kakao-label">카카오 로그인</span>
+          </a>
+          <form class="auth-user" id="auth-user" method="post" action="/auth/kakao/logout" hidden>
+            <img class="avatar" id="auth-avatar" src="data:," alt="" width="28" height="28">
+            <span class="nickname" id="auth-name"></span>
+            <button type="submit" class="logout-btn">로그아웃</button>
+          </form>
+        </div>
+      </div>
     </div>
   </nav>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <main class="wrap">
 
@@ -611,6 +701,54 @@
   <footer>
     <div class="wrap">© 2026 · Made with HTML &amp; CSS</div>
   </footer>
+
+  <script>
+    // 카카오 로그인 상태 표시
+    (function () {
+      var loginBtn = document.getElementById("auth-login");
+      var userBox = document.getElementById("auth-user");
+      var toast = document.getElementById("toast");
+
+      function showToast(msg) {
+        toast.textContent = msg;
+        toast.hidden = false;
+        setTimeout(function () { toast.hidden = true; }, 3500);
+      }
+
+      // 로그인 결과 안내 후 주소창의 ?login=... 정리
+      var params = new URLSearchParams(location.search);
+      var result = params.get("login");
+      if (result) {
+        var reasons = {
+          access_denied: "카카오 로그인을 취소했습니다.",
+          invalid_state: "로그인 요청이 만료되었습니다. 다시 시도해 주세요.",
+          token: "카카오 인증에 실패했습니다. 설정(Redirect URI, Client Secret)을 확인해 주세요.",
+          profile: "카카오 사용자 정보를 가져오지 못했습니다."
+        };
+        showToast(result === "success"
+          ? "카카오 로그인되었습니다."
+          : (reasons[params.get("reason")] || "로그인 중 오류가 발생했습니다."));
+        history.replaceState(null, "", location.pathname + location.hash);
+      }
+
+      // 파일로 직접 열었을 때(file://)는 서버 함수가 없으므로 건너뜀
+      if (location.protocol === "file:") return;
+
+      fetch("/api/me", { credentials: "same-origin", cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : { loggedIn: false }; })
+        .then(function (data) {
+          if (!data.loggedIn) return;
+          var u = data.user;
+          document.getElementById("auth-name").textContent = u.nickname;
+          var avatar = document.getElementById("auth-avatar");
+          if (u.image) { avatar.src = u.image; avatar.alt = u.nickname + " 프로필 사진"; }
+          else { avatar.hidden = true; }
+          loginBtn.hidden = true;
+          userBox.hidden = false;
+        })
+        .catch(function () { /* 함수가 없는 환경: 로그인 버튼 그대로 */ });
+    })();
+  </script>
 
 </body>
 </html>
