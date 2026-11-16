@@ -3,13 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#F8F8F8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
   <title>개발자 포트폴리오</title>
   <meta name="description" content="20년 경력 소프트웨어 개발자 포트폴리오">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Noto+Sans+KR:wght@300..800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">  <style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Noto+Sans+KR:wght@300..800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <style>
     /* ===== 디자인 토큰 (Awwwards 스타일) ===== */
     :root {
       --font-1: Inter; /* 이전: Inter Tight */
@@ -96,11 +98,40 @@
       }
     }
 
+    /* 페이지 색상 · 유동 간격 토큰 */
+    :root {
+      --color-page-bg: #ffffff;
+      --color-page-text: #000000;
+      --space-xs: clamp(.3125rem, .2344rem + .3906vw, .625rem);
+      --space-s: clamp(.625rem, .4688rem + .7813vw, 1.25rem);
+      --space-m: clamp(1.25rem, .9375rem + 1.5625vw, 2.5rem);
+      --space-l: clamp(1.875rem, 1.4063rem + 2.3438vw, 3.75rem);
+      --space-xl: clamp(2.5rem, 1.875rem + 3.125vw, 5rem);
+      --space-2xl: clamp(3.125rem, 2.3438rem + 3.9063vw, 6.25rem);
+      --space-3xl: clamp(3.75rem, 2.8125rem + 4.6875vw, 7.5rem);
+      --space-4xl: clamp(4.375rem, 3.2813rem + 5.4688vw, 8.75rem);
+      --space-5xl: clamp(5rem, 3.75rem + 6.25vw, 10rem);
+      --space-xs-s: clamp(.3125rem, .0781rem + 1.1719vw, 1.25rem);
+      --space-s-m: clamp(.625rem, .1563rem + 2.3438vw, 2.5rem);
+      --space-m-l: clamp(1.25rem, .625rem + 3.125vw, 3.75rem);
+      --space-l-xl: clamp(1.875rem, 1.0938rem + 3.9063vw, 5rem);
+      --space-xl-2xl: clamp(2.5rem, 1.5625rem + 4.6875vw, 6.25rem);
+      --space-2xl-3xl: clamp(3.125rem, 2.0313rem + 5.4688vw, 7.5rem);
+      --space-3xl-4xl: clamp(3.75rem, 2.5rem + 6.25vw, 8.75rem);
+      --space-4xl-5xl: clamp(4.375rem, 2.9688rem + 7.0313vw, 10rem);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-page-bg: var(--bg-primary);
+        --color-page-text: var(--color-primary);
+      }
+    }
+
     /* 페이지에서 쓰는 이름 → 토큰 연결 */
     :root {
-      --bg: var(--bg-primary);
+      --bg: var(--color-page-bg);
       --surface: var(--bg-white);
-      --text: var(--color-primary);
+      --text: var(--color-page-text);
       --muted: rgba(var(--color-primary-rgb), .62);
       --line: var(--border-gray);
       --accent: var(--color-awards);
@@ -143,8 +174,8 @@
       max-width: 760px;
       margin: 0 auto;
       /* 노치가 있는 기기의 가로 모드에서도 내용이 가려지지 않도록 */
-      padding-left: max(24px, env(safe-area-inset-left));
-      padding-right: max(24px, env(safe-area-inset-right));
+      padding-left: max(var(--space-m), env(safe-area-inset-left));
+      padding-right: max(var(--space-m), env(safe-area-inset-right));
     }
 
     /* 상단 내비게이션 */
@@ -262,76 +293,99 @@
     section[id] { scroll-margin-top: 56px; }
 
     /* 히어로 */
-    header.hero { padding: 48px 0 72px; }
+    header.hero { padding: var(--space-l) 0 var(--space-xl); }
 
-    /* 왔다 갔다 하는 강아지: GIF는 제자리걸음, 좌우 이동은 CSS */
-    .puppy-track {
+    /* 왔다 갔다 하는 강아지: GIF는 제자리걸음, 좌우 이동은 CSS, 이동 시간은 스크립트가 폭에 맞춤 */
+    .dog-walk {
+      --dog-width: 110px;
+      --ground-height: 30px;
       position: relative;
-      height: 60px;
-      margin-bottom: 32px;
-      border-bottom: 1px dashed var(--line); /* 강아지가 걷는 땅 */
+      height: 132px;
+      margin-bottom: var(--space-m);
+      border-radius: var(--rounded-large);
+      overflow: hidden;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14'%3E%3Cpath d='M55 14 49 5M55 14V2M55 14 61 6' fill='none' stroke='%233ea060' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E") left bottom calc(var(--ground-height) - 2px) repeat-x,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='62' fill='%23bed5f3'%3E%3Ccircle cx='70' cy='28' r='16'/%3E%3Ccircle cx='90' cy='20' r='20'/%3E%3Ccircle cx='112' cy='30' r='15'/%3E%3Crect x='44' y='30' width='88' height='14'/%3E%3Ccircle cx='270' cy='46' r='13'/%3E%3Ccircle cx='288' cy='40' r='17'/%3E%3Ccircle cx='306' cy='48' r='12'/%3E%3Crect x='254' y='48' width='68' height='12'/%3E%3C/svg%3E") left top 6px repeat-x,
+        #9fc0eb;
     }
-    .puppy {
+    .dog-walk::before {
+      content: "";
       position: absolute;
-      bottom: -3px; /* 발이 선에 닿도록 */
       left: 0;
-      width: 84px;
-      height: 60px;
-      image-rendering: pixelated; /* 픽셀아트가 흐려지지 않게 */
-      animation: puppy-walk 14s linear infinite;
+      right: 0;
+      bottom: 0;
+      height: var(--ground-height);
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='5'%3E%3Crect x='10' width='30' height='5' rx='2.5' fill='%2376a0dc'/%3E%3C/svg%3E") left center repeat-x,
+        #8db2e6;
     }
-    @keyframes puppy-walk {
-      0%     { left: 0;                  transform: scaleX(1); }
-      49.99% { left: calc(100% - 84px);  transform: scaleX(1); }
-      50%    { left: calc(100% - 84px);  transform: scaleX(-1); } /* 끝에서 뒤돌기 */
-      99.99% { left: 0;                  transform: scaleX(-1); }
-      100%   { left: 0;                  transform: scaleX(1); }
+    .dog-track {
+      position: absolute;
+      left: 12px;
+      bottom: calc(var(--ground-height) - 4px);
+      width: calc(100% - var(--dog-width) - 24px);
+      isolation: isolate;
+      animation: dog-travel var(--dog-duration, 8s) linear infinite alternate;
+    }
+    .dog-track::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      bottom: -3px;
+      width: calc(var(--dog-width) - 16px);
+      height: 7px;
+      border-radius: 50%;
+      background: #76a0dc;
+      z-index: -1;
+    }
+    .dog-track img {
+      display: block;
+      width: var(--dog-width);
+      height: auto;
+      animation: dog-turn calc(var(--dog-duration, 8s) * 2) step-end infinite;
+    }
+    @keyframes dog-travel {
+      from { transform: translateX(0); }
+      to { transform: translateX(100%); }
+    }
+    @keyframes dog-turn {
+      0% { transform: scaleX(1); }
+      50% { transform: scaleX(-1); } /* 끝에서 뒤돌기 */
     }
     @media (prefers-reduced-motion: reduce) {
-      .puppy { animation: none; }
-    }
-    .hero .eyebrow {
-      color: var(--accent);
-      font-size: var(--text-size-primary);
-      font-weight: var(--font-medium);
-      margin-bottom: 16px;
+      .dog-track, .dog-track img { animation: none; }
     }
     .hero h1 {
       font-size: clamp(32px, 6vw, 48px);
       line-height: 1.25;
       font-weight: var(--font-bold);
       letter-spacing: -0.02em;
-      margin-bottom: 28px;
+      margin-bottom: var(--space-s);
     }
     .hero-image {
-      max-width: 560px;
-      margin: 0 0 28px;
-      border-radius: var(--rounded-large);
-      overflow: hidden;
-      background: var(--surface);
-    }
-    .hero-image img {
       display: block;
       width: 100%;
       height: auto; /* width/height 속성으로 비율을 미리 잡아 로딩 중 레이아웃 흔들림 방지 */
+      margin-top: var(--space-m);
+      border-radius: var(--rounded-large);
     }
     .hero p {
       color: var(--muted);
       font-size: var(--text-size-medium);
       line-height: 180%;
-      max-width: 560px;
     }
     /* 숫자 카드: 3개가 항상 같은 폭·높이 */
     .stats {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-top: 40px;
+      gap: var(--space-s);
+      margin-top: var(--space-m);
     }
     .stat {
       display: flex;
       flex-direction: column;
-      padding: 20px;
+      padding: var(--space-s);
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--rounded-large);
@@ -356,28 +410,20 @@
       justify-content: center;
       width: 56px;
       height: 56px;
-      margin-bottom: 16px;
+      margin-bottom: var(--space-s);
       border-radius: var(--rounded-normal);
       background: var(--icon-bg);
       color: var(--icon-fg, #222);
     }
-    /* Heroicons outline 기본값: 24px 그리드, 선 두께 1.5 */
-    .stat-icon svg {
-      width: 28px;
-      height: 28px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
+    /* Font Awesome Free (solid) */
+    .stat-icon i { font-size: 24px; }
     .stat--exp   { --icon-bg: var(--color-connect-3); }
     .stat--edu   { --icon-bg: var(--color-awards-2); --icon-fg: #fff; }
     .stat--stack { --icon-bg: var(--color-jobs-3); }
 
     /* 섹션 공통 */
     section {
-      padding: 56px 0;
+      padding: var(--space-xl) 0;
       border-top: 1px solid var(--line);
     }
     section h2 {
@@ -386,15 +432,15 @@
       text-transform: uppercase;
       letter-spacing: .12em;
       color: var(--muted);
-      margin-bottom: 28px;
+      margin-bottom: var(--space-m);
     }
 
     /* 경력 */
     .item {
       display: grid;
       grid-template-columns: 140px 1fr;
-      gap: 24px;
-      padding: 18px 0;
+      gap: var(--space-m);
+      padding: var(--space-s) 0;
     }
     .item + .item { border-top: 1px dashed var(--line); }
     .item .when {
@@ -409,31 +455,44 @@
     .item p { color: var(--muted); font-size: var(--text-size-primary); margin-top: 2px; }
 
     /* 기술 */
-    .skill-group + .skill-group { margin-top: 24px; }
+    .skill-group + .skill-group { margin-top: var(--space-m); }
     .skill-group h3 {
       font-size: var(--text-size-primary);
       font-weight: var(--font-medium);
-      margin-bottom: 10px;
+      margin-bottom: var(--space-xs);
     }
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chips { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+    /* 뱃지마다 style="--hue: 값" 으로 색상만 지정 */
     .chip {
       display: inline-flex;
       align-items: center;
+      gap: 8px;
       height: 36px;
       padding: 0 16px;
       font-size: var(--text-size-primary);
-      font-weight: var(--font-normal);
+      font-weight: var(--font-medium);
+      border: 1px solid hsl(var(--hue, 220) 70% 86%);
       border-radius: var(--rounded-normal);
-      /* 그룹별 색은 아래 --chip-bg / --chip-bg-hover 로 지정 */
-      background: var(--chip-bg, var(--chip));
-      color: #222; /* 파스텔 배경 위라 다크 모드에서도 진한 글자 유지 */
-      transition: background .3s;
+      background: hsl(var(--hue, 220) 90% 96%);
+      color: hsl(var(--hue, 220) 75% 30%);
     }
-    @media (hover: hover) {
-      .chip:hover { background: var(--chip-bg-hover, var(--chip-bg, var(--chip))); }
+    .chip::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: hsl(var(--hue, 220) 80% 50%);
+    }
+    @media (prefers-color-scheme: dark) {
+      .chip {
+        border-color: hsl(var(--hue, 220) 50% 28%);
+        background: hsl(var(--hue, 220) 55% 14%);
+        color: hsl(var(--hue, 220) 85% 78%);
+      }
+      .chip::before { background: hsl(var(--hue, 220) 85% 62%); }
     }
 
-    /* 그룹별 색상 (디자인 토큰의 컬러 패밀리 사용) */
+    /* 그룹 제목 앞 점 (디자인 토큰의 컬러 패밀리 사용) */
     .skill-group h3 {
       display: flex;
       align-items: center;
@@ -446,30 +505,12 @@
       border-radius: 50%;
       background: var(--group-dot);
     }
-    .skill-group--lang {
-      --chip-bg: var(--color-connect-3);
-      --chip-bg-hover: var(--color-connect-2);
-      --group-dot: var(--color-connect);
-    }
-    .skill-group--dev {
-      --chip-bg: var(--color-inspire);
-      --chip-bg-hover: var(--color-inspire-2);
-      --group-dot: #52c67e;
-    }
-    .skill-group--tools {
-      --chip-bg: var(--color-jobs-3);
-      --chip-bg-hover: var(--color-jobs-2);
-      --group-dot: var(--color-jobs);
-    }
-    /* 강조 칩: AI는 Awwwards 보라로 */
-    .chip--accent {
-      --chip-bg: var(--color-awards-2);
-      --chip-bg-hover: #502bd8;
-      color: #fff;
-    }
+    .skill-group--lang { --group-dot: var(--color-connect); }
+    .skill-group--dev { --group-dot: #52c67e; }
+    .skill-group--tools { --group-dot: var(--color-jobs); }
 
     /* 연락처 */
-    .contact p { color: var(--muted); margin-bottom: 20px; }
+    .contact p { color: var(--muted); margin-bottom: var(--space-s); }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -491,37 +532,27 @@
     }
 
     footer {
-      padding: 40px 0 calc(56px + env(safe-area-inset-bottom));
+      padding: var(--space-m) 0 calc(var(--space-l) + env(safe-area-inset-bottom));
       color: var(--muted);
       font-size: var(--text-size-small);
       border-top: 1px solid var(--line);
     }
 
     @media (max-width: 600px) {
-      .wrap {
-        padding-left: max(20px, env(safe-area-inset-left));
-        padding-right: max(20px, env(safe-area-inset-right));
-      }
       nav ul { gap: 0; }
       nav ul a { padding: 0 8px; }
       .nav-right { gap: 4px; }
       /* 좁은 화면: 카카오 버튼은 아이콘만, 로그인 후엔 닉네임 숨김 */
       .kakao-label, .nickname { display: none; }
       .kakao-btn { width: 36px; padding: 0; justify-content: center; }
-      header.hero { padding: 32px 0 44px; }
-      .puppy-track { margin-bottom: 24px; }
-      .puppy { animation-duration: 8s; } /* 좁은 화면은 거리가 짧으니 속도 맞춤 */
       .hero p { font-size: 16px; }
-      .hero-image { margin-bottom: 24px; border-radius: var(--rounded-normal); }
-      .stats { gap: 8px; margin-top: 32px; }
-      .stat { padding: 14px 12px; border-radius: var(--rounded-normal); }
-      .stat-icon { width: 44px; height: 44px; margin-bottom: 12px; }
-      .stat-icon svg { width: 22px; height: 22px; }
+      .dog-walk, .hero-image { border-radius: var(--rounded-normal); }
+      .stat { border-radius: var(--rounded-normal); }
+      .stat-icon { width: 44px; height: 44px; }
+      .stat-icon i { font-size: 19px; }
       .stat strong { font-size: 15px; }
       .stat > span:not(.stat-icon) { font-size: var(--text-size-small); }
-      section { padding: 44px 0; }
-      section h2 { margin-bottom: 20px; }
-      .item { grid-template-columns: 1fr; gap: 4px; padding: 14px 0; }
+      .item { grid-template-columns: 1fr; gap: var(--space-xs); }
       .btn { display: flex; width: 100%; }
     }
 
@@ -580,40 +611,35 @@
   <main class="wrap">
 
     <header class="hero">
-      <div class="puppy-track" aria-hidden="true">
-        <img class="puppy" src="images/puppy.gif" width="84" height="60" alt="">
+      <div class="dog-walk" role="img" aria-label="산책로를 왔다 갔다 하는 강아지 애니메이션">
+        <div class="dog-track">
+          <img src="images/dog-walk.gif" alt="" width="220" height="146">
+        </div>
       </div>
-      <p class="eyebrow">Hello, world.</p>
       <h1>20년 동안 코드로<br>문제를 풀어온 개발자입니다.</h1>
-      <figure class="hero-image">
-        <img src="images/images.jpg" width="548" height="364"
-             alt="노트북을 든 채 웃고 있는 개발자 일러스트와 '비개발자, 바이브 코딩으로 시민개발자가 되다' 문구"
-             decoding="async">
-      </figure>
       <p>
         C/C++부터 Java, Python까지, 프론트엔드와 백엔드를 아우르며
         소프트웨어를 만들어 왔습니다. 인공지능 석사(컴퓨터 비전)를 바탕으로
         AI 기술을 실제 서비스에 접목하는 일에 관심이 많습니다.
       </p>
+      <img class="hero-image" src="images/developer.png" width="1000" height="622"
+           alt="모니터와 노트북이 놓인 개발자 책상 일러스트" decoding="async">
       <div class="stats">
         <div class="stat stat--exp">
           <span class="stat-icon" aria-hidden="true">
-            <!-- Heroicons: clock (outline) -->
-            <svg viewBox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            <i class="fa-solid fa-briefcase"></i>
           </span>
           <strong>20년</strong><span>개발 경력</span>
         </div>
         <div class="stat stat--edu">
           <span class="stat-icon" aria-hidden="true">
-            <!-- Heroicons: academic-cap (outline) -->
-            <svg viewBox="0 0 24 24"><path d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>
+            <i class="fa-solid fa-graduation-cap"></i>
           </span>
           <strong>M.S.</strong><span>인공지능 · 컴퓨터 비전</span>
         </div>
         <div class="stat stat--stack">
           <span class="stat-icon" aria-hidden="true">
-            <!-- Heroicons: square-3-stack-3d (outline) -->
-            <svg viewBox="0 0 24 24"><path d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3"/></svg>
+            <i class="fa-solid fa-layer-group"></i>
           </span>
           <strong>Full-stack</strong><span>Front-end · Back-end</span>
         </div>
@@ -651,29 +677,29 @@
       <div class="skill-group skill-group--lang">
         <h3>Languages</h3>
         <div class="chips">
-          <span class="chip">C</span>
-          <span class="chip">C++</span>
-          <span class="chip">Java</span>
-          <span class="chip">Python</span>
+          <span class="chip" style="--hue: 205">C</span>
+          <span class="chip" style="--hue: 235">C++</span>
+          <span class="chip" style="--hue: 18">Java</span>
+          <span class="chip" style="--hue: 45">Python</span>
         </div>
       </div>
       <div class="skill-group skill-group--dev">
         <h3>Development</h3>
         <div class="chips">
-          <span class="chip">Front-end</span>
-          <span class="chip">Back-end</span>
-          <span class="chip">Computer Vision</span>
-          <span class="chip chip--accent">AI</span>
+          <span class="chip" style="--hue: 330">Front-end</span>
+          <span class="chip" style="--hue: 155">Back-end</span>
+          <span class="chip" style="--hue: 270">Computer Vision</span>
+          <span class="chip" style="--hue: 185">AI</span>
         </div>
       </div>
       <div class="skill-group skill-group--tools">
         <h3>Tools &amp; Infra</h3>
         <div class="chips">
-          <span class="chip">Docker</span>
-          <span class="chip">Kubernetes</span>
-          <span class="chip">Git</span>
-          <span class="chip">GitHub</span>
-          <span class="chip">AWS</span>
+          <span class="chip" style="--hue: 200">Docker</span>
+          <span class="chip" style="--hue: 222">Kubernetes</span>
+          <span class="chip" style="--hue: 8">Git</span>
+          <span class="chip" style="--hue: 285">GitHub</span>
+          <span class="chip" style="--hue: 32">AWS</span>
         </div>
       </div>
     </section>
@@ -747,6 +773,21 @@
           userBox.hidden = false;
         })
         .catch(function () { /* 함수가 없는 환경: 로그인 버튼 그대로 */ });
+    })();
+  </script>
+  <script>
+    // 강아지 이동 시간: 산책로 길이에 맞춰 걷는 속도를 일정하게 유지
+    (function () {
+      var DOG_SPEED_PX_PER_SEC = 94;
+      var strip = document.querySelector(".dog-walk");
+      var track = strip && strip.querySelector(".dog-track");
+      if (!track || !("ResizeObserver" in window)) return;
+      new ResizeObserver(function () {
+        var distance = track.clientWidth;
+        if (distance > 0) {
+          strip.style.setProperty("--dog-duration", (distance / DOG_SPEED_PX_PER_SEC).toFixed(2) + "s");
+        }
+      }).observe(track);
     })();
   </script>
 
