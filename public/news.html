@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff">
+  <script src="js/theme.js"></script>
   <title>뉴스 · 개발자 포트폴리오</title>
   <meta name="description" content="AI·개발·IT 분야의 최신 뉴스 모음">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -192,13 +192,18 @@
     <div class="wrap wrap--wide">
       <a class="logo" href="index.html" aria-label="홈으로">~/dev</a>
       <div class="nav-right">
-        <ul>
+        <ul id="nav-menu">
           <li><a href="index.html#experience">경력</a></li>
           <li><a href="index.html#skills">기술</a></li>
           <li><a href="index.html#education">학력</a></li>
           <li><a href="index.html#contact">연락</a></li>
           <li><a href="news.html" aria-current="page">뉴스</a></li>
         </ul>
+
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="다크 모드로 전환" aria-pressed="false">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          <i class="fa-solid fa-sun" aria-hidden="true"></i>
+        </button>
 
         <!-- 카카오 로그인: 로그인 상태는 /api/me 로 확인해 아래 둘 중 하나를 보여줌 -->
         <div class="auth" id="auth">
@@ -212,6 +217,11 @@
             <button type="submit" class="logout-btn">로그아웃</button>
           </form>
         </div>
+
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="nav-menu">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
       </div>
     </div>
   </nav>
@@ -242,6 +252,7 @@
   </footer>
 
   <script src="js/auth.js" defer></script>
+  <script src="js/nav.js" defer></script>
   <script src="js/news.js" defer></script>
 </body>
 </html>

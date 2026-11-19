@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff">
+  <script src="js/theme.js"></script>
   <title>개발자 포트폴리오</title>
   <meta name="description" content="20년 경력 소프트웨어 개발자 포트폴리오">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,9 +19,9 @@
     /* 히어로 */
     header.hero { padding: var(--space-l) 0 var(--space-xl); }
 
-    /* 왔다 갔다 하는 강아지: GIF는 제자리걸음, 좌우 이동은 CSS, 이동 시간은 스크립트가 폭에 맞춤 */
+    /* 통통 튀는 마스코트와 뒤쫓는 강아지: GIF는 제자리 동작(그림자 포함), 좌우 이동은 CSS, 이동 시간은 스크립트가 폭에 맞춤 */
     .dog-walk {
-      --dog-width: 110px;
+      --dog-width: 182px;
       --ground-height: 30px;
       position: relative;
       height: 132px;
@@ -47,21 +47,9 @@
     .dog-track {
       position: absolute;
       left: 12px;
-      bottom: calc(var(--ground-height) - 4px);
+      bottom: calc(var(--ground-height) - 7px);
       width: calc(100% - var(--dog-width) - 24px);
-      isolation: isolate;
       animation: dog-travel var(--dog-duration, 8s) linear infinite alternate;
-    }
-    .dog-track::after {
-      content: "";
-      position: absolute;
-      left: 8px;
-      bottom: -3px;
-      width: calc(var(--dog-width) - 16px);
-      height: 7px;
-      border-radius: 50%;
-      background: #76a0dc;
-      z-index: -1;
     }
     .dog-track img {
       display: block;
@@ -207,14 +195,12 @@
       border-radius: 50%;
       background: hsl(var(--hue, 220) 80% 50%);
     }
-    @media (prefers-color-scheme: dark) {
-      .chip {
-        border-color: hsl(var(--hue, 220) 50% 28%);
-        background: hsl(var(--hue, 220) 55% 14%);
-        color: hsl(var(--hue, 220) 85% 78%);
-      }
-      .chip::before { background: hsl(var(--hue, 220) 85% 62%); }
+    :root[data-theme="dark"] .chip {
+      border-color: hsl(var(--hue, 220) 50% 28%);
+      background: hsl(var(--hue, 220) 55% 14%);
+      color: hsl(var(--hue, 220) 85% 78%);
     }
+    :root[data-theme="dark"] .chip::before { background: hsl(var(--hue, 220) 85% 62%); }
 
     /* 그룹 제목 앞 점 (디자인 토큰의 컬러 패밀리 사용) */
     .skill-group h3 {
@@ -287,13 +273,18 @@
     <div class="wrap">
       <span class="logo">~/dev</span>
       <div class="nav-right">
-        <ul>
+        <ul id="nav-menu">
           <li><a href="#experience">경력</a></li>
           <li><a href="#skills">기술</a></li>
           <li><a href="#education">학력</a></li>
           <li><a href="#contact">연락</a></li>
           <li><a href="news.html">뉴스</a></li>
         </ul>
+
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="다크 모드로 전환" aria-pressed="false">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          <i class="fa-solid fa-sun" aria-hidden="true"></i>
+        </button>
 
         <!-- 카카오 로그인: 로그인 상태는 /api/me 로 확인해 아래 둘 중 하나를 보여줌 -->
         <div class="auth" id="auth">
@@ -307,6 +298,11 @@
             <button type="submit" class="logout-btn">로그아웃</button>
           </form>
         </div>
+
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="nav-menu">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
       </div>
     </div>
   </nav>
@@ -316,9 +312,9 @@
   <main class="wrap">
 
     <header class="hero">
-      <div class="dog-walk" role="img" aria-label="산책로를 왔다 갔다 하는 강아지 애니메이션">
+      <div class="dog-walk" role="img" aria-label="통통 튀며 달아나는 캐릭터를 강아지가 쫓아다니는 애니메이션">
         <div class="dog-track">
-          <img src="images/dog-walk.gif" alt="" width="220" height="146">
+          <img src="images/dog-walk.gif" alt="" width="365" height="155">
         </div>
       </div>
       <h1>20년 동안 코드로<br>문제를 풀어온 개발자입니다.</h1>
@@ -434,6 +430,7 @@
   </footer>
 
   <script src="js/auth.js" defer></script>
+  <script src="js/nav.js" defer></script>
   <script>
     // 강아지 이동 시간: 산책로 길이에 맞춰 걷는 속도를 일정하게 유지
     (function () {
