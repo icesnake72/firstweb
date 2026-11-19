@@ -26,6 +26,7 @@
 #   /auth/kakao/callback  → netlify/functions/kakao-callback.mjs
 #   /auth/kakao/logout    → netlify/functions/kakao-logout.mjs
 #   /api/me               → netlify/functions/me.mjs
+#   /api/news             → netlify/functions/news.mjs (NewsAPI 프록시)
 
 # 기본 보안 헤더
 [[headers]]

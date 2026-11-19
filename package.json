@@ -4,7 +4,8 @@
   "type": "module",
   "description": "Personal developer portfolio with Kakao login (Netlify Functions)",
   "scripts": {
-    "dev": "netlify dev"
+    "dev": "netlify dev",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=20"
