@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F8F8F8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <title>날씨 · 개발자 포트폴리오</title>
+  <meta name="description" content="지역별 현재 날씨와 5일 예보">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Noto+Sans+KR:wght@300..800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .wx-head { padding: 56px 0 20px; }
+    .wx-head .eyebrow { color: var(--accent); font-size: var(--text-size-primary); font-weight: var(--font-medium); margin-bottom: 8px; }
+    .wx-head h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.25; font-weight: var(--font-bold); letter-spacing: -0.02em; }
+
+    /* 검색 */
+    .wx-search { display: flex; gap: 6px; }
+    .wx-search input {
+      flex: 1; min-width: 0; height: 44px; padding: 0 14px;
+      border: 1px solid var(--line); border-radius: var(--rounded-normal);
+      background: var(--surface); color: var(--text); font: inherit; font-size: 16px;
+    }
+    .wx-btn {
+      flex: none; height: 44px; padding: 0 16px; border: 0;
+      border-radius: var(--rounded-normal); background: var(--text); color: var(--bg);
+      font: inherit; font-size: var(--text-size-primary); font-weight: var(--font-medium); cursor: pointer;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .wx-btn--ghost { background: var(--chip); color: var(--text); }
+    .wx-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+    .wx-search input:focus-visible, .wx-btn:focus-visible, .city:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .cities { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; }
+    .city {
+      height: 32px; padding: 0 12px; border: 0; border-radius: var(--rounded-normal);
+      background: var(--chip); color: var(--text); font: inherit; font-size: 13px; cursor: pointer;
+    }
+    @media (hover: hover) { .city:hover { background: var(--line); } }
+    .cities .label { align-self: center; color: var(--muted); font-size: 12px; margin-right: 4px; }
+
+    .status { min-height: 24px; margin: 16px 0 4px; color: var(--muted); font-size: 13px; }
+
+    /* 현재 날씨 카드 */
+    .wx-now {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 16px;
+      padding: 24px;
+      border-radius: var(--rounded-large);
+      background: linear-gradient(135deg, var(--color-jobs-3), var(--color-inspire-3));
+      color: #222;
+    }
+    .wx-place { font-size: 18px; font-weight: var(--font-bold); line-height: 1.4; }
+    .wx-place small { display: block; font-size: 12px; font-weight: var(--font-normal); color: rgba(0,0,0,.6); }
+    .wx-temp { font-size: clamp(56px, 12vw, 80px); font-weight: var(--font-bold); line-height: 1; letter-spacing: -0.03em; margin-top: 8px; }
+    .wx-desc { font-size: 15px; margin-top: 6px; }
+    .wx-range { font-size: 13px; color: rgba(0,0,0,.65); }
+    .wx-icon-lg { grid-row: 1 / span 4; grid-column: 2; align-self: center; width: 120px; height: 120px; }
+
+    .wx-details {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px;
+    }
+    .wx-detail {
+      padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--rounded-normal); background: var(--surface);
+    }
+    .wx-detail span { display: block; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .wx-detail strong { font-size: 16px; font-weight: var(--font-bold); line-height: 1.5; }
+
+    /* 카카오맵 */
+    .wx-map-box {
+      position: relative;
+      height: 320px;
+      border: 1px solid var(--line);
+      border-radius: var(--rounded-large);
+      overflow: hidden;
+      background: var(--chip);
+    }
+    .wx-map { position: absolute; inset: 0; }
+    .wx-map-msg {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      padding: 24px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6;
+    }
+    .wx-map-hint { margin-top: 8px; color: var(--muted); font-size: 12px; }
+    /* 지도 위 날씨 말풍선 */
+    .map-pin {
+      display: flex; align-items: center; gap: 2px;
+      padding: 2px 10px 2px 2px;
+      border-radius: 999px;
+      background: #fff;
+      color: #222;
+      font-family: var(--font-body);
+      font-size: 13px; font-weight: 600; line-height: 1;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .25);
+      white-space: nowrap;
+      transform: translateY(-46px); /* 마커 위에 표시 */
+    }
+    .map-pin img { width: 32px; height: 32px; }
+    .map-pin span { color: #666; font-weight: 400; margin-left: 4px; }
+
+    .alt { margin-top: 10px; font-size: 12px; color: var(--muted); }
+    .alt button { border: 0; background: none; color: var(--accent); font: inherit; cursor: pointer; padding: 2px 4px; text-decoration: underline; }
+
+    /* 섹션 제목 */
+    .wx-h { margin: 32px 0 12px; font-size: var(--text-size-small); font-weight: var(--font-medium); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+
+    /* 시간별 */
+    .hourly { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(72px, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+    .hour {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 10px 6px; border: 1px solid var(--line); border-radius: var(--rounded-normal); background: var(--surface);
+      font-size: 12px; color: var(--muted);
+    }
+    .hour img { width: 40px; height: 40px; }
+    .hour strong { color: var(--text); font-size: 15px; }
+    .pop { color: #2f80ed; font-size: 11px; min-height: 16px; white-space: nowrap; }
+
+    /* 일별 */
+    .daily { border: 1px solid var(--line); border-radius: var(--rounded-large); background: var(--surface); overflow: hidden; }
+    .day {
+      display: grid; grid-template-columns: 64px 40px 48px 44px 1fr 44px; align-items: center; gap: 8px;
+      padding: 8px 16px; font-size: 14px; line-height: 1.4;
+    }
+    .day + .day { border-top: 1px solid var(--line); }
+    .day .name { font-weight: var(--font-medium); }
+    .day .name small { display: block; color: var(--muted); font-size: 11px; font-weight: var(--font-normal); }
+    .day img { width: 40px; height: 40px; }
+    .day .lo { text-align: right; color: var(--muted); }
+    .day .hi { font-weight: var(--font-bold); }
+    .bar { position: relative; height: 6px; border-radius: 3px; background: var(--chip); }
+    .bar i { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: linear-gradient(90deg, var(--color-jobs), var(--color-connect)); }
+    .note { margin: 10px 0 48px; color: var(--muted); font-size: 12px; }
+    .note a { color: inherit; }
+
+    .empty { padding: 40px 16px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: var(--rounded-large); }
+    [hidden] { display: none !important; }
+
+    @media (max-width: 600px) {
+      .wx-head { padding: 32px 0 16px; }
+      .wx-now { padding: 20px; }
+      .wx-icon-lg { width: 88px; height: 88px; }
+      .wx-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .wx-btn .txt { display: none; }
+      .day { grid-template-columns: 52px 36px 40px 36px 1fr 36px; gap: 6px; padding: 10px 12px; font-size: 13px; }
+      .day img { width: 36px; height: 36px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="wrap">
+      <a class="logo" href="index.html" style="color:inherit;text-decoration:none">~/dev</a>
+      <div class="nav-right">
+        <ul>
+          <li><a href="index.html">홈</a></li>
+          <li><a href="news.html">뉴스</a></li>
+          <li><a href="weather.html" aria-current="page">날씨</a></li>
+          <li><a href="chat.html">챗봇</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <header class="wx-head">
+      <p class="eyebrow">Weather</p>
+      <h1>지역 날씨</h1>
+    </header>
+
+    <form class="wx-search" id="form" role="search">
+      <input type="search" name="q" placeholder="지역 이름 (예: 서울, 부산, Tokyo)" aria-label="지역 이름" maxlength="80" autocomplete="off">
+      <button class="wx-btn" type="submit">검색</button>
+      <button class="wx-btn wx-btn--ghost" type="button" id="locate" aria-label="내 위치 날씨">
+        <!-- Heroicons: map-pin (outline) -->
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+        <span class="txt">내 위치</span>
+      </button>
+    </form>
+    <div class="cities" id="cities">
+      <span class="label">빠른 선택</span>
+      <button class="city" type="button">서울</button>
+      <button class="city" type="button">부산</button>
+      <button class="city" type="button">대전</button>
+      <button class="city" type="button">제주</button>
+      <button class="city" type="button">도쿄</button>
+      <button class="city" type="button">뉴욕</button>
+    </div>
+
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+
+    <div id="result" hidden>
+      <section class="wx-now" aria-label="현재 날씨">
+        <div class="wx-place" id="place"></div>
+        <div class="wx-temp" id="temp"></div>
+        <div class="wx-desc" id="desc"></div>
+        <div class="wx-range" id="range"></div>
+        <img class="wx-icon-lg" id="icon" alt="" width="120" height="120">
+      </section>
+      <div class="alt" id="alt" hidden></div>
+
+      <div class="wx-details" id="details"></div>
+
+      <h2 class="wx-h">지도</h2>
+      <div class="wx-map-box">
+        <div class="wx-map" id="map" role="application" aria-label="카카오맵: 지도를 클릭하면 그 위치의 날씨를 보여줍니다"></div>
+        <div class="wx-map-msg" id="map-msg">지도를 불러오는 중…</div>
+      </div>
+      <p class="wx-map-hint" id="map-hint">지도를 클릭하면 그 위치의 날씨를 볼 수 있어요.</p>
+
+      <h2 class="wx-h">시간별 예보 (24시간)</h2>
+      <div class="hourly" id="hourly"></div>
+
+      <h2 class="wx-h">일별 예보</h2>
+      <div class="daily" id="daily"></div>
+      <p class="note">무료 API 범위인 5일 예보(3시간 단위)를 일별로 요약했습니다. 날씨 데이터: <a href="https://openweathermap.org" target="_blank" rel="noopener noreferrer">OpenWeather</a></p>
+    </div>
+
+    <div class="empty" id="empty" hidden></div>
+  </main>
+
+  <script>
+    (function () {
+      var $ = function (id) { return document.getElementById(id); };
+      var form = $("form"), input = form.elements.q, statusEl = $("status");
+      var ERRORS = {
+        not_found: "지역을 찾지 못했습니다. 다른 이름으로 검색해 보세요. (예: 서울특별시 → 서울)",
+        invalid_key: "OpenWeather API 키가 아직 활성화되지 않았거나 올바르지 않습니다. 새 키는 활성화까지 최대 2시간 걸릴 수 있어요.",
+        rate_limited: "조회 한도를 초과했습니다. 잠시 후 다시 시도해 주세요.",
+        missing_query: "지역 이름을 입력해 주세요."
+      };
+      var DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+      var current = 0;
+
+      function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+      function iconUrl(code, big) { return "https://openweathermap.org/img/wn/" + encodeURIComponent(code) + (big ? "@4x" : "@2x") + ".png"; }
+      function deg(n) { return Math.round(n) + "°"; }
+      // 지역 현지 시각 (timezone 오프셋 적용 후 UTC 값으로 읽기)
+      function local(dt, tz) { return new Date((dt + tz) * 1000); }
+      function hhmm(dt, tz) { var d = local(dt, tz); return String(d.getUTCHours()).padStart(2, "0") + ":" + String(d.getUTCMinutes()).padStart(2, "0"); }
+      function windDir(d) { if (d == null) return ""; return ["북", "북동", "동", "남동", "남", "남서", "서", "북서"][Math.round(d / 45) % 8] + "풍 "; }
+
+      function save(q) { try { localStorage.setItem("wx:last", q); } catch (e) {} }
+      function last() { try { return localStorage.getItem("wx:last"); } catch (e) { return null; } }
+
+      function showError(msg) {
+        $("result").hidden = true;
+        var e = $("empty"); e.textContent = msg; e.hidden = false;
+        statusEl.textContent = "";
+      }
+
+      function render(d) {
+        var tz = d.timezone, c = d.current, loc = d.location;
+        $("empty").hidden = true;
+
+        var place = $("place"); place.replaceChildren();
+        place.appendChild(document.createTextNode(loc.name));
+        var sub = [loc.state, loc.country].filter(Boolean).join(", ");
+        place.appendChild(el("small", "", (sub ? sub + " · " : "") + "현지 " + hhmm(c.dt, tz) + " 기준"));
+
+        $("temp").textContent = deg(c.temp);
+        $("desc").textContent = c.description;
+        var today = d.daily[0];
+        $("range").textContent = today ? "최고 " + deg(today.max) + " / 최저 " + deg(today.min) + " · 체감 " + deg(c.feelsLike) : "체감 " + deg(c.feelsLike);
+        var icon = $("icon"); icon.src = iconUrl(c.icon, true); icon.alt = c.description;
+
+        // 같은 이름의 다른 지역
+        var alt = $("alt"); alt.replaceChildren();
+        if (d.candidates && d.candidates.length) {
+          alt.appendChild(document.createTextNode("다른 지역: "));
+          d.candidates.slice(0, 4).forEach(function (p) {
+            var b = el("button", "", p.name + " (" + [p.state, p.country].filter(Boolean).join(", ") + ")");
+            b.type = "button";
+            b.addEventListener("click", function () { load({ lat: p.lat, lon: p.lon, label: p.name }); });
+            alt.appendChild(b);
+          });
+          alt.hidden = false;
+        } else alt.hidden = true;
+
+        var details = $("details"); details.replaceChildren();
+        [
+          ["습도", c.humidity + "%"],
+          ["바람", windDir(c.windDeg) + c.windSpeed + "m/s"],
+          ["구름", c.clouds != null ? c.clouds + "%" : "-"],
+          ["일출", c.sunrise ? hhmm(c.sunrise, tz) : "-"],
+          ["일몰", c.sunset ? hhmm(c.sunset, tz) : "-"],
+          ["가시거리", c.visibility != null ? (c.visibility / 1000).toFixed(1) + "km" : "-"]
+        ].forEach(function (x) {
+          var box = el("div", "wx-detail"); box.appendChild(el("span", "", x[0])); box.appendChild(el("strong", "", x[1])); details.appendChild(box);
+        });
+
+        var hourly = $("hourly"); hourly.replaceChildren();
+        d.hourly.forEach(function (h, i) {
+          var box = el("div", "hour");
+          box.appendChild(el("span", "", i === 0 ? "곧" : local(h.dt, tz).getUTCHours() + "시"));
+          var img = el("img"); img.src = iconUrl(h.icon); img.alt = h.description; img.loading = "lazy"; img.width = 40; img.height = 40;
+          box.appendChild(img);
+          box.appendChild(el("strong", "", deg(h.temp)));
+          box.appendChild(el("span", "pop", h.pop >= 10 ? "💧" + h.pop + "%" : ""));
+          hourly.appendChild(box);
+        });
+
+        var daily = $("daily"); daily.replaceChildren();
+        var lo = Math.min.apply(null, d.daily.map(function (x) { return x.min; }));
+        var hi = Math.max.apply(null, d.daily.map(function (x) { return x.max; }));
+        var span = Math.max(hi - lo, 1);
+        d.daily.forEach(function (x, i) {
+          var row = el("div", "day");
+          var dt = new Date(x.date + "T00:00:00Z");
+          var name = el("div", "name", i === 0 ? "오늘" : i === 1 ? "내일" : DAYS[dt.getUTCDay()] + "요일");
+          name.appendChild(el("small", "", (dt.getUTCMonth() + 1) + "/" + dt.getUTCDate()));
+          row.appendChild(name);
+          var img = el("img"); img.src = iconUrl(x.icon); img.alt = x.description; img.loading = "lazy"; img.width = 40; img.height = 40;
+          row.appendChild(img);
+          row.appendChild(el("span", "pop", x.pop >= 10 ? "💧" + x.pop + "%" : ""));
+          row.appendChild(el("span", "lo", deg(x.min)));
+          var bar = el("div", "bar"); var fill = el("i");
+          fill.style.left = ((x.min - lo) / span * 100) + "%";
+          fill.style.right = ((hi - x.max) / span * 100) + "%";
+          bar.appendChild(fill); bar.setAttribute("aria-hidden", "true");
+          row.appendChild(bar);
+          row.appendChild(el("span", "hi", deg(x.max)));
+          row.setAttribute("aria-label", name.firstChild.textContent + " " + x.description + ", 최저 " + deg(x.min) + " 최고 " + deg(x.max) + (x.pop >= 10 ? ", 강수확률 " + x.pop + "%" : ""));
+          daily.appendChild(row);
+        });
+
+        $("result").hidden = false;
+        updateMap(d);
+        statusEl.textContent = "";
+      }
+
+      function load(opts) {
+        var id = ++current;
+        var qs = opts.q ? "q=" + encodeURIComponent(opts.q) : "lat=" + opts.lat + "&lon=" + opts.lon;
+        statusEl.textContent = (opts.q || opts.label || "내 위치") + " 날씨를 불러오는 중…";
+        if (opts.q) history.replaceState(null, "", "?q=" + encodeURIComponent(opts.q));
+
+        fetch("/api/weather?" + qs)
+          .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+          .then(function (d) {
+            if (id !== current) return;
+            if (!d.ok) return showError(ERRORS[d.code] || "날씨를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.");
+            render(d);
+            if (opts.q) save(opts.q);
+          })
+          .catch(function () {
+            if (id !== current) return;
+            showError(location.protocol === "file:" ? "이 페이지는 서버(netlify dev 또는 배포 사이트)에서 열어야 합니다." : "네트워크 오류로 날씨를 불러오지 못했습니다.");
+          });
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var q = input.value.trim();
+        if (q) load({ q: q });
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll(".city"), function (b) {
+        b.addEventListener("click", function () { input.value = b.textContent; load({ q: b.textContent }); });
+      });
+
+      $("locate").addEventListener("click", function () {
+        if (!navigator.geolocation) return showError("이 브라우저는 위치 기능을 지원하지 않습니다.");
+        statusEl.textContent = "현재 위치를 확인하는 중…";
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            input.value = "";
+            load({ lat: pos.coords.latitude.toFixed(4), lon: pos.coords.longitude.toFixed(4), label: "내 위치" });
+          },
+          function () { showError("위치 권한이 거부되었거나 위치를 확인할 수 없습니다. 지역 이름으로 검색해 주세요."); },
+          { timeout: 10000, maximumAge: 600000 }
+        );
+      });
+
+      // ===== 카카오맵 =====
+      // SDK 는 처음 필요할 때 한 번만 불러온다. 키는 /api/maps-key 에서 받음.
+      var mapState = { promise: null, map: null, marker: null, overlay: null };
+
+      function mapMessage(text) {
+        var m = $("map-msg");
+        m.textContent = text || "";
+        m.hidden = !text;
+      }
+
+      function loadKakaoMaps() {
+        if (mapState.promise) return mapState.promise;
+        mapState.promise = fetch("/api/maps-key")
+          .then(function (r) { if (!r.ok) throw new Error("key_api"); return r.json(); })
+          .then(function (cfg) {
+            return new Promise(function (resolve, reject) {
+              var s = document.createElement("script");
+              s.src = "https://dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=" + encodeURIComponent(cfg.key);
+              s.async = true;
+              var timer = setTimeout(function () { reject(new Error("timeout")); }, 20000);
+              s.onload = function () {
+                // 키/도메인이 거부되면 스크립트는 받아지지만 kakao.maps 가 만들어지지 않음
+                if (!window.kakao || !kakao.maps) { clearTimeout(timer); return reject(new Error("not_authorized")); }
+                kakao.maps.load(function () { clearTimeout(timer); resolve(kakao.maps); });
+              };
+              s.onerror = function () { clearTimeout(timer); reject(new Error("script_blocked")); };
+              document.head.appendChild(s);
+            });
+          });
+        return mapState.promise;
+      }
+
+      function updateMap(d) {
+        var loc = d.location, c = d.current;
+        loadKakaoMaps().then(function (maps) {
+          var pos = new maps.LatLng(loc.lat, loc.lon);
+          if (!mapState.map) {
+            mapState.map = new maps.Map($("map"), { center: pos, level: 8 });
+            mapState.map.addControl(new maps.ZoomControl(), maps.ControlPosition.RIGHT);
+            mapState.marker = new maps.Marker({ position: pos, map: mapState.map });
+            mapState.overlay = new maps.CustomOverlay({ position: pos, yAnchor: 1, zIndex: 3 });
+            // 지도 클릭 → 그 위치의 날씨
+            maps.event.addListener(mapState.map, "click", function (e) {
+              var ll = e.latLng;
+              input.value = "";
+              load({ lat: ll.getLat().toFixed(4), lon: ll.getLng().toFixed(4), label: "선택한 위치" });
+            });
+          }
+          mapMessage("");
+          mapState.map.relayout(); // 숨겨져 있던 영역이 보이게 된 직후 크기 다시 계산
+          mapState.map.setCenter(pos);
+          mapState.marker.setPosition(pos);
+
+          // 마커 위 말풍선: 아이콘 + 기온 + 지역명 (DOM 으로 만들어 XSS 방지)
+          var pin = el("div", "map-pin");
+          var img = el("img"); img.src = iconUrl(c.icon); img.alt = c.description; pin.appendChild(img);
+          pin.appendChild(document.createTextNode(deg(c.temp)));
+          pin.appendChild(el("span", "", loc.name));
+          mapState.overlay.setContent(pin);
+          mapState.overlay.setPosition(pos);
+          mapState.overlay.setMap(mapState.map);
+
+          $("map-hint").textContent = loc.country && loc.country !== "KR"
+            ? "카카오맵은 국내 지도 중심이라 해외 지역은 상세 지도가 표시되지 않을 수 있어요."
+            : "지도를 클릭하면 그 위치의 날씨를 볼 수 있어요.";
+        }).catch(function (err) {
+          var reason = (err && err.message) || "unknown";
+          var MSG = {
+            key_api: "지도 키를 받지 못했습니다. 서버 환경 변수 KAKAO_JAVASCRIPT_KEY 를 확인해 주세요.",
+            // 카카오가 401/403 으로 거부하거나(도메인 미등록·다른 앱의 키) 확장 프로그램이 막은 경우
+            script_blocked: "카카오가 지도 요청을 거부했습니다. 카카오 디벨로퍼스 > 앱 > 플랫폼 > Web 사이트 도메인에 " + location.origin + " 이 등록되어 있는지, JavaScript 키가 카카오맵을 활성화한 앱의 키인지 확인해 주세요. (광고 차단 확장 프로그램이 막는 경우도 있어요)",
+            not_authorized: "카카오가 지도 사용을 허용하지 않았습니다. 카카오 디벨로퍼스 > 앱 > 플랫폼 > Web 에 " + location.origin + " 이 등록되어 있는지 확인해 주세요.",
+            timeout: "카카오맵 응답이 너무 늦습니다. 잠시 후 새로고침해 주세요."
+          };
+          console.warn("[kakao-map] load failed:", reason);
+          mapState.promise = null; // 다음 검색 때 다시 시도
+          mapMessage(location.protocol === "file:"
+            ? "지도는 서버(netlify dev 또는 배포 사이트)에서 열어야 표시됩니다."
+            : (MSG[reason] || "카카오맵을 불러오지 못했습니다.") + " (" + reason + ")");
+        });
+      }
+
+      // 첫 화면: 주소 ?q= → 마지막 검색 → 서울
+      var q0 = new URLSearchParams(location.search).get("q") || last() || "서울";
+      input.value = q0;
+      load({ q: q0 });
+    })();
+  </script>
+</body>
+</html>
