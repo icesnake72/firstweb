@@ -26,6 +26,10 @@
 #   /auth/kakao/callback  → netlify/functions/kakao-callback.mjs
 #   /auth/kakao/logout    → netlify/functions/kakao-logout.mjs
 #   /api/me               → netlify/functions/me.mjs
+#   /api/news             → netlify/functions/news.mjs (NewsAPI 프록시)
+#   /api/weather          → netlify/functions/weather.mjs (OpenWeather 프록시)
+#   /api/maps-key         → netlify/functions/maps-key.mjs (카카오맵 JavaScript 키)
+#   /api/chat             → netlify/functions/chat.mjs (Claude 챗봇, 스트리밍)
 
 # 기본 보안 헤더
 [[headers]]

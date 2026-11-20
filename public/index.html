@@ -3,14 +3,269 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#F8F8F8" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff">
+  <script src="js/theme.js"></script>
   <title>개발자 포트폴리오</title>
   <meta name="description" content="20년 경력 소프트웨어 개발자 포트폴리오">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Noto+Sans+KR:wght@300..800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/base.css">
+  <style>
+    /* 앵커로 이동할 때 고정된 내비게이션에 제목이 가려지지 않도록 */
+    section[id] { scroll-margin-top: 56px; }
+
+    /* 히어로 */
+    header.hero { padding: var(--space-l) 0 var(--space-xl); }
+
+    /* 통통 튀는 마스코트와 뒤쫓는 강아지: GIF는 제자리 동작(그림자 포함), 좌우 이동은 CSS, 이동 시간은 스크립트가 폭에 맞춤 */
+    .dog-walk {
+      --dog-width: 182px;
+      --ground-height: 30px;
+      position: relative;
+      height: 132px;
+      margin-bottom: var(--space-m);
+      border-radius: var(--rounded-large);
+      overflow: hidden;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='14'%3E%3Cpath d='M55 14 49 5M55 14V2M55 14 61 6' fill='none' stroke='%233ea060' stroke-width='3.5' stroke-linecap='round'/%3E%3C/svg%3E") left bottom calc(var(--ground-height) - 2px) repeat-x,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='62' fill='%23bed5f3'%3E%3Ccircle cx='70' cy='28' r='16'/%3E%3Ccircle cx='90' cy='20' r='20'/%3E%3Ccircle cx='112' cy='30' r='15'/%3E%3Crect x='44' y='30' width='88' height='14'/%3E%3Ccircle cx='270' cy='46' r='13'/%3E%3Ccircle cx='288' cy='40' r='17'/%3E%3Ccircle cx='306' cy='48' r='12'/%3E%3Crect x='254' y='48' width='68' height='12'/%3E%3C/svg%3E") left top 6px repeat-x,
+        #9fc0eb;
+    }
+    .dog-walk::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--ground-height);
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='5'%3E%3Crect x='10' width='30' height='5' rx='2.5' fill='%2376a0dc'/%3E%3C/svg%3E") left center repeat-x,
+        #8db2e6;
+    }
+    .dog-track {
+      position: absolute;
+      left: 12px;
+      bottom: calc(var(--ground-height) - 7px);
+      width: calc(100% - var(--dog-width) - 24px);
+      animation: dog-travel var(--dog-duration, 8s) linear infinite alternate;
+    }
+    .dog-track img {
+      display: block;
+      width: var(--dog-width);
+      height: auto;
+      animation: dog-turn calc(var(--dog-duration, 8s) * 2) step-end infinite;
+    }
+    @keyframes dog-travel {
+      from { transform: translateX(0); }
+      to { transform: translateX(100%); }
+    }
+    @keyframes dog-turn {
+      0% { transform: scaleX(1); }
+      50% { transform: scaleX(-1); } /* 끝에서 뒤돌기 */
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .dog-track, .dog-track img { animation: none; }
+    }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 48px);
+      line-height: 1.25;
+      font-weight: var(--font-bold);
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-s);
+    }
+    .hero-image {
+      display: block;
+      width: 100%;
+      height: auto; /* width/height 속성으로 비율을 미리 잡아 로딩 중 레이아웃 흔들림 방지 */
+      margin-top: var(--space-m);
+      border-radius: var(--rounded-large);
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: var(--text-size-medium);
+      line-height: 180%;
+    }
+    /* 숫자 카드: 3개가 항상 같은 폭·높이 */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-s);
+      margin-top: var(--space-m);
+    }
+    .stat {
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-s);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--rounded-large);
+    }
+    .stat strong {
+      display: block;
+      font-size: 16px;
+      font-weight: var(--font-bold);
+      line-height: 1.4;
+    }
+    .stat > span:not(.stat-icon) {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* 숫자 영역 아이콘 (Skills 뱃지와 같은 컬러 패밀리) */
+    .stat-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      margin-bottom: var(--space-s);
+      border-radius: var(--rounded-normal);
+      background: var(--icon-bg);
+      color: var(--icon-fg, #222);
+    }
+    /* Font Awesome Free (solid) */
+    .stat-icon i { font-size: 24px; }
+    .stat--exp   { --icon-bg: var(--color-connect-3); }
+    .stat--edu   { --icon-bg: var(--color-awards-2); --icon-fg: #fff; }
+    .stat--stack { --icon-bg: var(--color-jobs-3); }
+
+    /* 섹션 공통 */
+    section {
+      padding: var(--space-xl) 0;
+      border-top: 1px solid var(--line);
+    }
+    section h2 {
+      font-size: var(--text-size-small);
+      font-weight: var(--font-medium);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      margin-bottom: var(--space-m);
+    }
+
+    /* 경력 */
+    .item {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: var(--space-m);
+      padding: var(--space-s) 0;
+    }
+    .item + .item { border-top: 1px dashed var(--line); }
+    .item .when {
+      color: var(--muted);
+      font-size: var(--text-size-primary);
+    }
+    .item h3 {
+      font-size: var(--text-size-medium);
+      font-weight: var(--font-bold);
+      line-height: 1.6;
+    }
+    .item p { color: var(--muted); font-size: var(--text-size-primary); margin-top: 2px; }
+
+    /* 기술 */
+    .skill-group + .skill-group { margin-top: var(--space-m); }
+    .skill-group h3 {
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-medium);
+      margin-bottom: var(--space-xs);
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+    /* 뱃지마다 style="--hue: 값" 으로 색상만 지정 */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 36px;
+      padding: 0 16px;
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-medium);
+      border: 1px solid hsl(var(--hue, 220) 70% 86%);
+      border-radius: var(--rounded-normal);
+      background: hsl(var(--hue, 220) 90% 96%);
+      color: hsl(var(--hue, 220) 75% 30%);
+    }
+    .chip::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: hsl(var(--hue, 220) 80% 50%);
+    }
+    :root[data-theme="dark"] .chip {
+      border-color: hsl(var(--hue, 220) 50% 28%);
+      background: hsl(var(--hue, 220) 55% 14%);
+      color: hsl(var(--hue, 220) 85% 78%);
+    }
+    :root[data-theme="dark"] .chip::before { background: hsl(var(--hue, 220) 85% 62%); }
+
+    /* 그룹 제목 앞 점 (디자인 토큰의 컬러 패밀리 사용) */
+    .skill-group h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .skill-group h3::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--group-dot);
+    }
+    .skill-group--lang { --group-dot: var(--color-connect); }
+    .skill-group--dev { --group-dot: #52c67e; }
+    .skill-group--tools { --group-dot: var(--color-jobs); }
+
+    /* 연락처 */
+    .contact p { color: var(--muted); margin-bottom: var(--space-s); }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 24px;
+      border-radius: var(--rounded-normal);
+      background: var(--text);
+      color: var(--bg);
+      text-decoration: none;
+      font-size: var(--text-size-primary);
+      font-weight: var(--font-medium);
+      transition: opacity .3s;
+    }
+    .btn:active { opacity: .8; }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    @media (hover: hover) {
+      .btn:hover { opacity: .8; }
+    }
+
+    @media (max-width: 600px) {
+      .hero p { font-size: 16px; }
+      .dog-walk, .hero-image { border-radius: var(--rounded-normal); }
+      .stat { border-radius: var(--rounded-normal); }
+      .stat-icon { width: 44px; height: 44px; }
+      .stat-icon i { font-size: 19px; }
+      .stat strong { font-size: 15px; }
+      .stat > span:not(.stat-icon) { font-size: var(--text-size-small); }
+      .item { grid-template-columns: 1fr; gap: var(--space-xs); }
+      .btn { display: flex; width: 100%; }
+    }
+
+    /* 아주 좁은 화면 (갤럭시 폴드 접힌 화면 등) */
+    @media (max-width: 360px) {
+      /* 3열이 너무 좁아지면 1열 가로형 카드로 (크기는 계속 동일) */
+      .stats { grid-template-columns: 1fr; }
+      .stat {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        column-gap: 12px;
+        align-items: center;
+      }
+      .stat-icon { grid-row: span 2; margin-bottom: 0; }
+    }
+  </style>
 </head>
 <body>
 
@@ -18,15 +273,20 @@
     <div class="wrap">
       <span class="logo">~/dev</span>
       <div class="nav-right">
-        <ul>
+        <ul id="nav-menu">
           <li><a href="#experience">경력</a></li>
           <li><a href="#skills">기술</a></li>
-          <li class="nav-minor"><a href="#education">학력</a></li>
-          <li class="nav-minor"><a href="#contact">연락</a></li>
-          <li><a href="news.html" class="nav-news">뉴스</a></li>
-          <li><a href="weather.html" class="nav-weather">날씨</a></li>
-          <li><a href="chat.html" class="nav-chat">챗봇</a></li>
+          <li><a href="#education">학력</a></li>
+          <li><a href="#contact">연락</a></li>
+          <li><a href="news.html">뉴스</a></li>
+          <li><a href="weather.html">날씨</a></li>
+          <li><a href="chat.html">챗봇</a></li>
         </ul>
+
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="다크 모드로 전환" aria-pressed="false">
+          <i class="fa-solid fa-moon" aria-hidden="true"></i>
+          <i class="fa-solid fa-sun" aria-hidden="true"></i>
+        </button>
 
         <!-- 카카오 로그인: 로그인 상태는 /api/me 로 확인해 아래 둘 중 하나를 보여줌 -->
         <div class="auth" id="auth">
@@ -40,6 +300,11 @@
             <button type="submit" class="logout-btn">로그아웃</button>
           </form>
         </div>
+
+        <button type="button" class="nav-toggle" id="nav-toggle" aria-label="메뉴 열기" aria-expanded="false" aria-controls="nav-menu">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
       </div>
     </div>
   </nav>
@@ -49,40 +314,35 @@
   <main class="wrap">
 
     <header class="hero">
-      <div class="puppy-track" aria-hidden="true">
-        <img class="puppy" src="images/puppy.gif" width="84" height="60" alt="">
+      <div class="dog-walk" role="img" aria-label="통통 튀며 달아나는 캐릭터를 강아지가 쫓아다니는 애니메이션">
+        <div class="dog-track">
+          <img src="images/dog-walk.gif" alt="" width="365" height="155">
+        </div>
       </div>
-      <p class="eyebrow">Hello, world.</p>
       <h1>20년 동안 코드로<br>문제를 풀어온 개발자입니다.</h1>
-      <figure class="hero-image">
-        <img src="images/images.jpg" width="548" height="364"
-             alt="노트북을 든 채 웃고 있는 개발자 일러스트와 '비개발자, 바이브 코딩으로 시민개발자가 되다' 문구"
-             decoding="async">
-      </figure>
       <p>
         C/C++부터 Java, Python까지, 프론트엔드와 백엔드를 아우르며
         소프트웨어를 만들어 왔습니다. 인공지능 석사(컴퓨터 비전)를 바탕으로
         AI 기술을 실제 서비스에 접목하는 일에 관심이 많습니다.
       </p>
+      <img class="hero-image" src="images/developer.png" width="1000" height="622"
+           alt="모니터와 노트북이 놓인 개발자 책상 일러스트" decoding="async">
       <div class="stats">
         <div class="stat stat--exp">
           <span class="stat-icon" aria-hidden="true">
-            <!-- Heroicons: clock (outline) -->
-            <svg viewBox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            <i class="fa-solid fa-briefcase"></i>
           </span>
           <strong>20년</strong><span>개발 경력</span>
         </div>
         <div class="stat stat--edu">
           <span class="stat-icon" aria-hidden="true">
-            <!-- Heroicons: academic-cap (outline) -->
-            <svg viewBox="0 0 24 24"><path d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/></svg>
+            <i class="fa-solid fa-graduation-cap"></i>
           </span>
           <strong>M.S.</strong><span>인공지능 · 컴퓨터 비전</span>
         </div>
         <div class="stat stat--stack">
           <span class="stat-icon" aria-hidden="true">
-            <!-- Heroicons: square-3-stack-3d (outline) -->
-            <svg viewBox="0 0 24 24"><path d="M6.429 9.75 2.25 12l4.179 2.25m0-4.5 5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L21.75 12l-4.179 2.25m0 0 4.179 2.25L12 21.75 2.25 16.5l4.179-2.25m11.142 0-5.571 3-5.571-3"/></svg>
+            <i class="fa-solid fa-layer-group"></i>
           </span>
           <strong>Full-stack</strong><span>Front-end · Back-end</span>
         </div>
@@ -120,29 +380,29 @@
       <div class="skill-group skill-group--lang">
         <h3>Languages</h3>
         <div class="chips">
-          <span class="chip">C</span>
-          <span class="chip">C++</span>
-          <span class="chip">Java</span>
-          <span class="chip">Python</span>
+          <span class="chip" style="--hue: 205">C</span>
+          <span class="chip" style="--hue: 235">C++</span>
+          <span class="chip" style="--hue: 18">Java</span>
+          <span class="chip" style="--hue: 45">Python</span>
         </div>
       </div>
       <div class="skill-group skill-group--dev">
         <h3>Development</h3>
         <div class="chips">
-          <span class="chip">Front-end</span>
-          <span class="chip">Back-end</span>
-          <span class="chip">Computer Vision</span>
-          <span class="chip chip--accent">AI</span>
+          <span class="chip" style="--hue: 330">Front-end</span>
+          <span class="chip" style="--hue: 155">Back-end</span>
+          <span class="chip" style="--hue: 270">Computer Vision</span>
+          <span class="chip" style="--hue: 185">AI</span>
         </div>
       </div>
       <div class="skill-group skill-group--tools">
         <h3>Tools &amp; Infra</h3>
         <div class="chips">
-          <span class="chip">Docker</span>
-          <span class="chip">Kubernetes</span>
-          <span class="chip">Git</span>
-          <span class="chip">GitHub</span>
-          <span class="chip">AWS</span>
+          <span class="chip" style="--hue: 200">Docker</span>
+          <span class="chip" style="--hue: 222">Kubernetes</span>
+          <span class="chip" style="--hue: 8">Git</span>
+          <span class="chip" style="--hue: 285">GitHub</span>
+          <span class="chip" style="--hue: 32">AWS</span>
         </div>
       </div>
     </section>
@@ -155,45 +415,6 @@
           <h3>호서대학교 인공지능학과</h3>
           <p>컴퓨터 비전 전공</p>
         </div>
-      </div>
-    </section>
-
-    <section id="news" class="news-promo">
-      <h2>Explore</h2>
-      <div class="explore-links">
-      <a class="news-link" href="news.html">
-        <span class="stat-icon news-link-icon" aria-hidden="true">
-          <!-- Heroicons: newspaper (outline) -->
-          <svg viewBox="0 0 24 24"><path d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z"/></svg>
-        </span>
-        <span class="news-link-text">
-          <strong>오늘의 뉴스 보러 가기</strong>
-          <span>기술 · 비즈니스 · 과학 등 카테고리별 최신 헤드라인</span>
-        </span>
-        <span class="news-link-arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="news-link" href="weather.html">
-        <span class="stat-icon news-link-icon weather-link-icon" aria-hidden="true">
-          <!-- Heroicons: sun (outline) -->
-          <svg viewBox="0 0 24 24"><path d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"/></svg>
-        </span>
-        <span class="news-link-text">
-          <strong>지역 날씨 보러 가기</strong>
-          <span>현재 날씨 · 시간별 · 5일 예보</span>
-        </span>
-        <span class="news-link-arrow" aria-hidden="true">→</span>
-      </a>
-      <a class="news-link" href="chat.html">
-        <span class="stat-icon news-link-icon chat-link-icon" aria-hidden="true">
-          <!-- Heroicons: chat-bubble-left-right (outline) -->
-          <svg viewBox="0 0 24 24"><path d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 0 1-.825-.242m9.345-8.334a2.126 2.126 0 0 0-.476-.095 48.64 48.64 0 0 0-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.637c0-1.621-1.152-3.026-2.76-3.235A48.455 48.455 0 0 0 11.25 3c-2.115 0-4.198.137-6.24.402-1.608.209-2.76 1.614-2.76 3.235v6.226c0 1.621 1.152 3.026 2.76 3.235.577.075 1.157.14 1.74.194V21l4.155-4.155"/></svg>
-        </span>
-        <span class="news-link-text">
-          <strong>AI 챗봇과 대화하기</strong>
-          <span>Claude Opus 5.5 기반 질문·답변</span>
-        </span>
-        <span class="news-link-arrow" aria-hidden="true">→</span>
-      </a>
       </div>
     </section>
 
@@ -210,51 +431,21 @@
     <div class="wrap">© 2026 · Made with HTML &amp; CSS</div>
   </footer>
 
+  <script src="js/auth.js" defer></script>
+  <script src="js/nav.js" defer></script>
   <script>
-    // 카카오 로그인 상태 표시
+    // 강아지 이동 시간: 산책로 길이에 맞춰 걷는 속도를 일정하게 유지
     (function () {
-      var loginBtn = document.getElementById("auth-login");
-      var userBox = document.getElementById("auth-user");
-      var toast = document.getElementById("toast");
-
-      function showToast(msg) {
-        toast.textContent = msg;
-        toast.hidden = false;
-        setTimeout(function () { toast.hidden = true; }, 3500);
-      }
-
-      // 로그인 결과 안내 후 주소창의 ?login=... 정리
-      var params = new URLSearchParams(location.search);
-      var result = params.get("login");
-      if (result) {
-        var reasons = {
-          access_denied: "카카오 로그인을 취소했습니다.",
-          invalid_state: "로그인 요청이 만료되었습니다. 다시 시도해 주세요.",
-          token: "카카오 인증에 실패했습니다. 설정(Redirect URI, Client Secret)을 확인해 주세요.",
-          profile: "카카오 사용자 정보를 가져오지 못했습니다."
-        };
-        showToast(result === "success"
-          ? "카카오 로그인되었습니다."
-          : (reasons[params.get("reason")] || "로그인 중 오류가 발생했습니다."));
-        history.replaceState(null, "", location.pathname + location.hash);
-      }
-
-      // 파일로 직접 열었을 때(file://)는 서버 함수가 없으므로 건너뜀
-      if (location.protocol === "file:") return;
-
-      fetch("/api/me", { credentials: "same-origin", cache: "no-store" })
-        .then(function (r) { return r.ok ? r.json() : { loggedIn: false }; })
-        .then(function (data) {
-          if (!data.loggedIn) return;
-          var u = data.user;
-          document.getElementById("auth-name").textContent = u.nickname;
-          var avatar = document.getElementById("auth-avatar");
-          if (u.image) { avatar.src = u.image; avatar.alt = u.nickname + " 프로필 사진"; }
-          else { avatar.hidden = true; }
-          loginBtn.hidden = true;
-          userBox.hidden = false;
-        })
-        .catch(function () { /* 함수가 없는 환경: 로그인 버튼 그대로 */ });
+      var DOG_SPEED_PX_PER_SEC = 94;
+      var strip = document.querySelector(".dog-walk");
+      var track = strip && strip.querySelector(".dog-track");
+      if (!track || !("ResizeObserver" in window)) return;
+      new ResizeObserver(function () {
+        var distance = track.clientWidth;
+        if (distance > 0) {
+          strip.style.setProperty("--dog-duration", (distance / DOG_SPEED_PX_PER_SEC).toFixed(2) + "s");
+        }
+      }).observe(track);
     })();
   </script>
 
